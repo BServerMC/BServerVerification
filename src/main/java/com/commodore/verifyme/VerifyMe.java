@@ -60,7 +60,7 @@ public class VerifyMe extends JavaPlugin
             vlog.info("Config generated!");
             saveDefaultConfig();
         }
-        if(getConfig().getString("BotName").isEmpty() || getConfig().getString("ForumUsername").isEmpty() || getConfig().getString("ForumPassword").isEmpty())
+        if(getConfig().getString("BotName").isEmpty() || getConfig().getString("ForumUsername").isEmpty() || getConfig().getString("ForumPassword").isEmpty() || getConfig().getString("ForumURL").isEmpty())
         {
             vlog.warning("You have not filled out the config! This will cause issues in operation.");
         }

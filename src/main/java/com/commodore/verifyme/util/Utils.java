@@ -63,7 +63,7 @@ public class Utils
     public void sendPM(final String forumUsername, final String subject, final String message)
     {
         SilentHtmlUnitDriver driver = new SilentHtmlUnitDriver();
-        driver.get("http://totalfreedom.boards.net");
+        driver.get(plugin.getConfig().getString("ForumURL"));
         driver.findElement(By.className("login")).click();
         driver.findElement(By.cssSelector("input[name='email']")).sendKeys(plugin.getConfig().getString("ForumUsername"));
         driver.findElement(By.cssSelector("input[name='password']")).sendKeys(plugin.getConfig().getString("ForumPassword"));
@@ -82,7 +82,7 @@ public class Utils
     public boolean findNewPM(Player player)
     {
         SilentHtmlUnitDriver driver = new SilentHtmlUnitDriver();
-        driver.get("http://totalfreedom.boards.net");
+        driver.get(plugin.getConfig().getString("ForumURL"));
         driver.findElement(By.className("login")).click();
         driver.findElement(By.cssSelector("input[name='email']")).sendKeys(plugin.getConfig().getString("ForumUsername"));
         driver.findElement(By.cssSelector("input[name='password']")).sendKeys(plugin.getConfig().getString("ForumPassword"));

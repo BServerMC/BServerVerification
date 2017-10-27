@@ -1,5 +1,8 @@
 #============ VerifyMe ============#
 
+# The URL of the forums.
+ForumURL: ''
+
 # The username and password for the bot forum account.
 ForumUsername: ''
 ForumPassword: ''
