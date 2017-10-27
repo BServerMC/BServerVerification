@@ -1,0 +1,11 @@
+name: VerifyMe
+main: com.commodore.verifyme.VerifyMe
+version: 1.0
+description: Plugin to verify admins for the TotalFreedom Server
+depend: [TotalFreedomMod]
+author: Commodore64x
+
+commands:
+  verifyme:
+    description: The main VerifyMe command, request or submit a verification token.
+    usage: "Usage: /verifyme <linkaccount | unlinkaccount [admin]> <gettoken> || <verifytoken token> || <help>"
