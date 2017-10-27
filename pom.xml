@@ -57,12 +57,6 @@
             <artifactId>htmlunit-driver</artifactId>
             <version>2.27</version>
         </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.16.18</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
     <build>
@@ -102,7 +96,8 @@
                                     <exclude>org.bukkit:bukkit</exclude>
                                     <exclude>org.spigotmc:spigot</exclude>
                                     <exclude>org.spigotmc:spigot-api</exclude>
-                                    <exclude>org.projectlombok:lombok</exclude>
+                                    <exclude>com.github.Pravian:Aero</exclude>
+                                    <exclude>me.totalfreedom:totalfreedom</exclude>
                                 </excludes>
                             </artifactSet>
                             <shadedArtifactAttached>true</shadedArtifactAttached>

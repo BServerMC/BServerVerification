@@ -9,7 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-import lombok.Getter;
 import me.totalfreedom.totalfreedommod.admin.Admin;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,7 +17,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public class StorageUtils
 {
     private VerifyMe plugin;
-    @Getter
     public Connection connection;
     
     public StorageUtils(VerifyMe plugin)
@@ -203,5 +201,10 @@ public class StorageUtils
             Admin admin = plugin.tfm.al.getAdmin(player);
             updateLastLogin(admin);
         }
+    }
+    
+    public Connection getConnection()
+    {
+        return this.connection;
     }
 }
