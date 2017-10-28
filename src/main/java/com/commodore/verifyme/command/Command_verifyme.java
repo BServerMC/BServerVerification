@@ -203,7 +203,7 @@ public class Command_verifyme implements CommandExecutor
                             playerSender.sendMessage(ChatColor.RED + "You are not authorised to use this command!");
                             return true;
                         }
-                        String adminName = args[0];
+                        String adminName = args[1];
                         if(!plugin.sutils.hasAlreadyLinkedAccount(adminName))
                         {
                             playerSender.sendMessage(ChatColor.RED + adminName + " does not have a forum account linked to this account!");
