@@ -98,6 +98,13 @@
                                     <exclude>org.spigotmc:spigot-api</exclude>
                                     <exclude>com.github.Pravian:Aero</exclude>
                                     <exclude>me.totalfreedom:totalfreedom</exclude>
+                                    <exclude>org.seleniumhq.selenium:selenium-chrome-driver</exclude>
+                                    <exclude>org.seleniumhq.selenium:selenium-edge-driver</exclude>
+                                    <exclude>org.seleniumhq.selenium:selenium-firefox-driver</exclude>
+                                    <exclude>org.seleniumhq.selenium:selenium-ie-driver</exclude>
+                                    <exclude>org.seleniumhq.selenium:selenium-opera-driver</exclude>
+                                    <exclude>org.seleniumhq.selenium:selenium-remote-driver</exclude>
+                                    <exclude>org.seleniumhq.selenium:selenium-safari-driver</exclude>
                                 </excludes>
                             </artifactSet>
                             <shadedArtifactAttached>true</shadedArtifactAttached>

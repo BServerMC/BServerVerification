@@ -29,27 +29,25 @@ public class StorageUtils
         try
         {
             File storageFile = new File(plugin.getDataFolder() + File.separator + "storage.db");
-            String url = "jdbc:sqlite:" + storageFile.getAbsolutePath();
-            if(!storageFile.exists())
+            this.connection = DriverManager.getConnection("jdbc:sqlite:" + storageFile.getAbsolutePath());
+            if(this.connection != null)
             {
-                this.connection = DriverManager.getConnection(url);
-                if(this.connection != null)
+                if(!storageFile.exists())
                 {
                     final String sql = "CREATE TABLE IF NOT EXISTS verifiedadmins(adminname text PRIMARY KEY, forumname text NOT NULL, lastlogin integer NOT NULL);";
                     this.connection.createStatement().execute(sql);
                     plugin.vlog.info("Cannot find database file, Generating now...");
                     plugin.vlog.info("Storage generated!");
                 }
-                
-            }
-            else
-            {
-                this.connection = DriverManager.getConnection(url);
-                if(this.connection != null)
+                else
                 {
                     plugin.vlog.info("Found database file, Loading now...");
                     plugin.vlog.info("Storage loaded!");
                 }
+            }
+            else
+            {
+                plugin.vlog.warning("A connection to the database failed to be created.");
             }
         }
         catch(SQLException e)
@@ -69,7 +67,7 @@ public class StorageUtils
             if(set.next())
             {
                 boolean hasAlreadyLinkedAccount = !set.getString("adminname").isEmpty();
-                set.close();
+                ps.close();
                 return hasAlreadyLinkedAccount;
             }
             return false;
@@ -91,6 +89,7 @@ public class StorageUtils
             ps.setString(2, forumUsername);
             ps.setLong(3, admin.getLastLogin().getTime());
             ps.executeUpdate();
+            ps.close();
         }
         catch(SQLException e)
         {
@@ -106,6 +105,7 @@ public class StorageUtils
             final PreparedStatement ps = this.connection.prepareStatement(sql);
             ps.setString(1, adminName);
             ps.executeUpdate();
+            ps.close();
         }
         catch(SQLException e)
         {
@@ -123,8 +123,11 @@ public class StorageUtils
             ResultSet set = ps.executeQuery();
             if(set.next())
             {
-                return set.getString("forumname");
+                String forumName = set.getString("forumname");
+                ps.close();
+                return forumName;
             }
+            ps.close();
             return null;
         }
         catch(SQLException e)
@@ -138,9 +141,8 @@ public class StorageUtils
     {
         try
         {
-            for(String adminName : plugin.tfm.al.getAdminNames())
+            for(Admin admin : plugin.tfm.al.getAllAdmins().values())
             {
-                Admin admin = plugin.tfm.al.getEntryByName(adminName);
                 String sql = "SELECT lastlogin FROM verifiedadmins WHERE adminname = ?;";
                 PreparedStatement ps = this.connection.prepareStatement(sql);
                 ps.setString(1, admin.getName());
@@ -153,8 +155,11 @@ public class StorageUtils
                     {
                         plugin.vlog.info(admin.getName() + " has been purged from the database.");
                         deleteFromStorage(admin.getName());
+                        ps.close();
                     }
+                    ps.close();
                 }
+                ps.close();
             }
             
             final String sql = "SELECT adminname FROM verifiedadmins;";
@@ -169,6 +174,7 @@ public class StorageUtils
                     deleteFromStorage(adminName);
                 }
             }
+            newPs.close();
         }
         catch(SQLException e)
         {
@@ -185,6 +191,7 @@ public class StorageUtils
             ps.setLong(1, admin.getLastLogin().getTime());
             ps.setString(2, admin.getName());
             ps.executeUpdate();
+            ps.close();
         }
         catch(SQLException e)
         {
@@ -198,13 +205,7 @@ public class StorageUtils
         Player player = event.getPlayer();
         if(plugin.tfm.al.isAdmin(player))
         {
-            Admin admin = plugin.tfm.al.getAdmin(player);
-            updateLastLogin(admin);
+            updateLastLogin(plugin.tfm.al.getAdmin(player));
         }
-    }
-    
-    public Connection getConnection()
-    {
-        return this.connection;
     }
 }

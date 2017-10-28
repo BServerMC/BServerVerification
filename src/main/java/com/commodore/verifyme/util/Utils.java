@@ -3,7 +3,6 @@ package com.commodore.verifyme.util;
 import com.commodore.verifyme.VerifyMe;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import me.totalfreedom.totalfreedommod.admin.Admin;
