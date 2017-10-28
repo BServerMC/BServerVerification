@@ -91,15 +91,13 @@ public class Utils
         
         driver.findElement(By.cssSelector("a[href='/conversations']")).click();
         List<WebElement> conversations = driver.findElements(By.className("conversation"));
-        Iterator<WebElement> iter = conversations.iterator();
-        while(iter.hasNext())
+        for(int i = 0;i < conversations.size();i++)
         {
-            WebElement conversation = iter.next();
             // Is there a new PM?
-            if(doesElementExist(conversation.findElement(By.className("icon")), By.cssSelector("img[src='//storage.proboards.com/forum/images/icons/message-new.png']")))
+            if(doesElementExist(conversations.get(i).findElement(By.className("icon")), By.cssSelector("img[src='//storage.proboards.com/forum/images/icons/message-new.png']")))
             {
                 // If so, enter PM
-                conversation.findElement(By.className("conversation-link")).click();
+                conversations.get(i).findElement(By.className("conversation-link")).click();
                 
                 String msg = driver.findElement(By.className("item")).findElement(By.className("message")).getText().trim();
                 String forumUsername = driver.findElement(By.className("mini-profile")).findElement(By.tagName("a")).getAttribute("title").trim().replace("@", "");
@@ -107,19 +105,22 @@ public class Utils
                 Admin admin = plugin.tfm.al.getEntryByName(player.getName());
                 if(!LINK_CODES.get(admin).equals(msg))
                 {
-                    driver.findElement(By.cssSelector("a[href='/conversations']")).click();
+                    driver.navigate().back();
+                    conversations = driver.findElements(By.className("conversation"));
                     continue;
                 }
                 if(!isStaff)
                 {
                     player.sendMessage(ChatColor.RED + "The specified forum account is not supered!");
-                    driver.findElement(By.cssSelector("a[href='/conversations']")).click();
+                    driver.navigate().back();
+                    conversations = driver.findElements(By.className("conversation"));
                     continue;
                 }
                 if(!msg.matches("[0-9][0-9][0-9][0-9][0-9]"))
                 {
                     player.sendMessage(ChatColor.RED + "The specified token is presented in an invalid format.");
-                    driver.findElement(By.cssSelector("a[href='/conversations']")).click();
+                    driver.navigate().back();
+                    conversations = driver.findElements(By.className("conversation"));
                     continue;
                 }
                 
@@ -129,7 +130,6 @@ public class Utils
                 driver.close();
                 return true;
             }
-            continue;
         }
         driver.close();
         return false;
