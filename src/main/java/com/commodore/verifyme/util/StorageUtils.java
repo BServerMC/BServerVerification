@@ -29,10 +29,11 @@ public class StorageUtils
         try
         {
             File storageFile = new File(plugin.getDataFolder() + File.separator + "storage.db");
-            this.connection = DriverManager.getConnection("jdbc:sqlite:" + storageFile.getAbsolutePath());
-            if(this.connection != null)
+            String url = "jdbc:sqlite:" + storageFile.getAbsolutePath();
+            if(!storageFile.exists())
             {
-                if(!storageFile.exists())
+                this.connection = DriverManager.getConnection(url);
+                if(this.connection != null)
                 {
                     plugin.vlog.info("Cannot find database file, Generating now...");
                     final String fsql = "CREATE TABLE IF NOT EXISTS forumverifiedadmins(adminname text PRIMARY KEY, forumname text NOT NULL, lastlogin integer NOT NULL);";
@@ -41,15 +42,16 @@ public class StorageUtils
                     this.connection.createStatement().execute(dsql);
                     plugin.vlog.info("Storage generated!");
                 }
-                else
+                
+            }
+            else
+            {
+                this.connection = DriverManager.getConnection(url);
+                if(this.connection != null)
                 {
                     plugin.vlog.info("Found database file, Loading now...");
                     plugin.vlog.info("Storage loaded!");
                 }
-            }
-            else
-            {
-                plugin.vlog.warning("A connection to the database failed to be created.");
             }
         }
         catch(SQLException e)
@@ -200,7 +202,7 @@ public class StorageUtils
     {
         try
         {
-            final String sql = "SELECT forumname FROM discordverifiedadmins WHERE adminname = ?;";
+            final String sql = "SELECT discordid FROM discordverifiedadmins WHERE adminname = ?;";
             final PreparedStatement ps = this.connection.prepareStatement(sql);
             ps.setString(1, admin.getName());
             ResultSet set = ps.executeQuery();
