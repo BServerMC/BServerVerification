@@ -68,15 +68,15 @@ public class DiscordUtils extends ListenerAdapter
     @Override
     public void onPrivateMessageReceived(PrivateMessageReceivedEvent event)
     {
-        String code = event.getMessage().getRawContent();
-        if(!event.getAuthor().getId().equals(this.bot.getSelfUser().getId()) && code.matches("[0-9][0-9][0-9][0-9][0-9][0-9]"))
+        String token = event.getMessage().getRawContent();
+        if(!event.getAuthor().getId().equals(this.bot.getSelfUser().getId()) && token.matches("[0-9][0-9][0-9][0-9][0-9][0-9]"))
         {
             Set set = this.LINK_CODES.entrySet();
             Iterator i = set.iterator();
             while(i.hasNext())
             {
                 Map.Entry me = (Map.Entry) i.next();
-                if(me.getValue().toString().equals(code))
+                if(me.getValue().toString().equals(token))
                 {
                     Admin admin = (Admin) me.getKey();
                     LINK_CODES.remove(admin);
