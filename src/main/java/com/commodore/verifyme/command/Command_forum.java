@@ -13,11 +13,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class Command_verifyme implements CommandExecutor
+public class Command_forum implements CommandExecutor
 {
     private VerifyMe plugin;
     
-    public Command_verifyme(VerifyMe plugin)
+    public Command_forum(VerifyMe plugin)
     {
         this.plugin = plugin;
     }
@@ -41,6 +41,11 @@ public class Command_verifyme implements CommandExecutor
                 switch(args[0])
                 {
                     case "linkaccount":
+                        if(!plugin.futils.enabled)
+                        {
+                            playerSender.sendMessage(ChatColor.RED + "The VerifyMe Forum Verification System is currently disabled.");
+                            return true;
+                        }
                         if(!plugin.tfm.al.isAdmin(sender))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You are not authorised to use this command!");
@@ -48,33 +53,33 @@ public class Command_verifyme implements CommandExecutor
                         }
                         
                         Admin linkAdmin = plugin.tfm.al.getAdmin(playerSender);
-                        if(plugin.sutils.hasAlreadyLinkedAccount(linkAdmin.getName()))
+                        if(plugin.sutils.hasAlreadyLinkedForumAccount(linkAdmin.getName()))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You have already linked a forum account to your account!");
                             return true;
                         }
-                        if(plugin.utils.LINK_CODES.keySet().contains(linkAdmin))
+                        if(plugin.futils.LINK_CODES.keySet().contains(linkAdmin))
                         {
                             playerSender.sendMessage(ChatColor.RED + "The specified forum account has already had a linking token sent to it.");
-                            String token = plugin.utils.LINK_CODES.get(linkAdmin);
+                            String token = plugin.futils.LINK_CODES.get(linkAdmin);
                             playerSender.sendMessage(ChatColor.AQUA + "Your linking token is " + ChatColor.GREEN + token);
                             return true;
                         }
                         
-                        String linkingToken = plugin.utils.generateToken();
-                        plugin.utils.LINK_CODES.put(linkAdmin, linkingToken);
+                        String linkingToken = plugin.futils.generateToken();
+                        plugin.futils.LINK_CODES.put(linkAdmin, linkingToken);
                         
-                        plugin.utils.findNewPmTask(playerSender);
+                        plugin.futils.findNewPmTask(playerSender);
                         playerSender.sendMessage(ChatColor.AQUA + "Your linking token is " + ChatColor.GREEN + linkingToken);
-                        playerSender.sendMessage(ChatColor.AQUA + "Please PM the bot named " + plugin.getConfig().getString("BotName") + " with your token otherwise it will expire in 10 minutes.");
+                        playerSender.sendMessage(ChatColor.AQUA + "Please PM the forum bot named " + plugin.getConfig().getString("BotName") + " with your token otherwise it will expire in 10 minutes.");
                         new BukkitRunnable()
                         {
                             @Override
                             public void run()
                             {
-                                if(plugin.utils.LINK_CODES.keySet().contains(linkAdmin))
+                                if(plugin.futils.LINK_CODES.keySet().contains(linkAdmin))
                                 {
-                                    plugin.utils.LINK_CODES.remove(linkAdmin);
+                                    plugin.futils.LINK_CODES.remove(linkAdmin);
                                     if(playerSender != null)
                                     {
                                         playerSender.sendMessage(ChatColor.RED + "Your linking token has expired! Please run this command again to obtain a new one.");
@@ -84,6 +89,11 @@ public class Command_verifyme implements CommandExecutor
                         }.runTaskLater(plugin, 600 * 20L);
                         return true;
                     case "unlinkaccount":
+                        if(!plugin.futils.enabled)
+                        {
+                            playerSender.sendMessage(ChatColor.RED + "The VerifyMe Forum Verification System is currently disabled.");
+                            return true;
+                        }
                         if(!plugin.tfm.al.isAdmin(sender))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You are not authorised to use this command!");
@@ -91,15 +101,20 @@ public class Command_verifyme implements CommandExecutor
                         }
                         
                         Admin unlinkAdmin = plugin.tfm.al.getAdmin(playerSender);
-                        if(!plugin.sutils.hasAlreadyLinkedAccount(unlinkAdmin.getName()))
+                        if(!plugin.sutils.hasAlreadyLinkedForumAccount(unlinkAdmin.getName()))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You have not got a forum account linked to this account!");
                             return true;
                         }
-                        plugin.sutils.deleteFromStorage(unlinkAdmin.getName());
+                        plugin.sutils.deleteForumAccountFromStorage(unlinkAdmin.getName());
                         playerSender.sendMessage(ChatColor.GREEN + "Your forum account has been unlinked from this account.");
                         return true;
                     case "gettoken":
+                        if(!plugin.futils.enabled)
+                        {
+                            playerSender.sendMessage(ChatColor.RED + "The VerifyMe Forum Verification System is currently disabled.");
+                            return true;
+                        }
                         if(!plugin.tfm.al.isAdminImpostor(playerSender))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You are not an impostor!");
@@ -107,29 +122,29 @@ public class Command_verifyme implements CommandExecutor
                         }
                         
                         Admin verifyAdmin = plugin.tfm.al.getEntryByName(playerSender.getName());
-                        if(!plugin.sutils.hasAlreadyLinkedAccount(verifyAdmin.getName()))
+                        if(!plugin.sutils.hasAlreadyLinkedForumAccount(verifyAdmin.getName()))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You have not got a forum account linked to this account!");
                             return true;
                         }
-                        if(plugin.utils.VERIFY_CODES.keySet().contains(verifyAdmin))
+                        if(plugin.futils.VERIFY_CODES.keySet().contains(verifyAdmin))
                         {
                             playerSender.sendMessage(ChatColor.RED + "The specified forum account has already had a verification token sent to it.");
                             return true;
                         }
                         
-                        String verifyToken = plugin.utils.generateToken();
-                        plugin.utils.VERIFY_CODES.put(verifyAdmin, verifyToken);
-                        plugin.utils.sendNewPmTask(plugin.sutils.getForumUsername(verifyAdmin), "Verify your account.", "Hi! Someone with the IP: " + Ips.getIp(playerSender) + " just logged in with your account and tried to verify. If this is you please run the command: /verifyme verifytoken " + verifyToken);
+                        String verifyToken = plugin.futils.generateToken();
+                        plugin.futils.VERIFY_CODES.put(verifyAdmin, verifyToken);
+                        plugin.futils.sendNewPmTask(plugin.sutils.getForumUsername(verifyAdmin), "Verify your account.", "Hi! Someone with the IP: " + Ips.getIp(playerSender) + " just logged in with your account and tried to verify. If this is you please run the command: /verifyme verifytoken " + verifyToken);
                         playerSender.sendMessage(ChatColor.GREEN + "A verification token has been sent to your forum account. It will expire in 10 minutes.");
                         new BukkitRunnable()
                         {
                             @Override
                             public void run()
                             {
-                                if(plugin.utils.VERIFY_CODES.keySet().contains(verifyAdmin))
+                                if(plugin.futils.VERIFY_CODES.keySet().contains(verifyAdmin))
                                 {
-                                    plugin.utils.VERIFY_CODES.remove(verifyAdmin);
+                                    plugin.futils.VERIFY_CODES.remove(verifyAdmin);
                                     if(playerSender != null)
                                     {
                                         playerSender.sendMessage(ChatColor.RED + "Your verification token has expired! Please run this command again to obtain a new one.");
@@ -147,7 +162,7 @@ public class Command_verifyme implements CommandExecutor
                             playerSender.sendMessage(ChatColor.RED + "You are not authorised to use this command!");
                             return true;
                         }
-                        playerSender.sendMessage(ChatColor.GREEN + "VerifyMe Usage");
+                        playerSender.sendMessage(ChatColor.GREEN + "VerifyMe Forum Verification Usage");
                         
                         playerSender.sendMessage(ChatColor.RED + "As an supered admin:");
                         playerSender.sendMessage(ChatColor.BLUE + "1. Run the command /verifyme linkaccount");
@@ -169,25 +184,30 @@ public class Command_verifyme implements CommandExecutor
                 switch(args[0])
                 {
                     case "verifytoken":
+                        if(!plugin.futils.enabled)
+                        {
+                            playerSender.sendMessage(ChatColor.RED + "The VerifyMe Forum Verification System is currently disabled.");
+                            return true;
+                        }
                         if(!plugin.tfm.al.isAdminImpostor(playerSender))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You are not an impostor!");
                             return true;
                         }
                         Admin admin = plugin.tfm.al.getEntryByName(playerSender.getName());
-                        if(!plugin.utils.VERIFY_CODES.keySet().contains(admin))
+                        if(!plugin.futils.VERIFY_CODES.keySet().contains(admin))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You have not been given a token.");
                             return true;
                         }
                         
                         String token = args[1];
-                        if(!plugin.utils.VERIFY_CODES.get(admin).equals(token))
+                        if(!plugin.futils.VERIFY_CODES.get(admin).equals(token))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You have entered an invalid token. Please try again.");
                             return true;
                         }
-                        plugin.utils.VERIFY_CODES.remove(admin);
+                        plugin.futils.VERIFY_CODES.remove(admin);
                         FUtil.bcastMsg(playerSender.getName() + " has verified their identity.", ChatColor.GOLD);
                         FUtil.adminAction("VerifyMe", "Re-adding " + admin.getName() + " to the admin list", true);
                         admin.setName(playerSender.getName());
@@ -198,18 +218,23 @@ public class Command_verifyme implements CommandExecutor
                         plugin.tfm.al.updateTables();
                         return true;
                     case "unlinkaccount":
+                        if(!plugin.futils.enabled)
+                        {
+                            playerSender.sendMessage(ChatColor.RED + "The VerifyMe Forum Verification System is currently disabled.");
+                            return true;
+                        }
                         if(!(plugin.tfm.al.isAdmin(playerSender) && plugin.tfm.rm.getRank(playerSender) == Rank.SENIOR_ADMIN))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You are not authorised to use this command!");
                             return true;
                         }
                         String adminName = args[1];
-                        if(!plugin.sutils.hasAlreadyLinkedAccount(adminName))
+                        if(!plugin.sutils.hasAlreadyLinkedForumAccount(adminName))
                         {
                             playerSender.sendMessage(ChatColor.RED + adminName + " does not have a forum account linked to this account!");
                             return true;
                         }
-                        plugin.sutils.deleteFromStorage(adminName);
+                        plugin.sutils.deleteForumAccountFromStorage(adminName);
                         playerSender.sendMessage(ChatColor.GREEN + adminName + " has had their forum account unlinked from this account.");
                         return true;
                     default:

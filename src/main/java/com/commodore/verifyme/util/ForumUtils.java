@@ -13,18 +13,26 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
-public class Utils
+public class ForumUtils
 {
+    
+    public HashMap<Admin, String> LINK_CODES = new HashMap<>();
+    public HashMap<Admin, String> VERIFY_CODES = new HashMap<>();
+    public boolean enabled = false;
     private VerifyMe plugin;
     
-    public Utils(VerifyMe plugin)
+    public ForumUtils(VerifyMe plugin)
     {
         this.plugin = plugin;
     }
     
-    public HashMap<Admin, String> LINK_CODES = new HashMap<>();
-    public HashMap<Admin, String> VERIFY_CODES = new HashMap<>();
-    
+    public void start()
+    {
+        if(plugin.getConfig().getBoolean("ForumVerification"))
+        {
+            enabled = true;
+        }
+    }
     public final List<String> FORUM_ADMIN_RANKS = Arrays.asList(
             "Server Owner",
             "Administrator",
@@ -124,7 +132,7 @@ public class Utils
                 }
                 
                 LINK_CODES.remove(admin);
-                plugin.sutils.addToStorage(admin, forumUsername);
+                plugin.sutils.addForumAccountToStorage(admin, forumUsername);
                 player.sendMessage(ChatColor.GREEN + "Your forum account has been successfully linked to your ingame account.");
                 driver.close();
                 return true;
@@ -142,7 +150,7 @@ public class Utils
             @Override
             public void run()
             {
-                plugin.utils.sendPM(forumUsername, subject, message);
+                plugin.futils.sendPM(forumUsername, subject, message);
             }
         }.runTaskAsynchronously(plugin);
     }
@@ -158,7 +166,7 @@ public class Utils
             public void run()
             {
                 tries++;
-                if(plugin.utils.findNewPM(player) || tries >= 30 || !player.isOnline() || player == null)
+                if(plugin.futils.findNewPM(player) || tries >= 30 || !player.isOnline() || player == null)
                 {
                     tries = 0;
                     this.cancel();

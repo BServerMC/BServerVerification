@@ -6,6 +6,9 @@ depend: [TotalFreedomMod]
 author: Commodore64x
 
 commands:
-  verifyme:
-    description: The main VerifyMe command, request or submit a verification token.
-    usage: "Usage: /verifyme <linkaccount | unlinkaccount [admin]> <gettoken> || <verifytoken token> || <help>"
+  forum:
+    description: The forum verification command, request or submit a verification token.
+    usage: "Usage: /forum <linkaccount | unlinkaccount [admin]> <gettoken> || <verifytoken token> || <help>"
+  discord:
+    description: The discord verification command, request or submit a verification token.
+    usage: "Usage: /discord <linkaccount | unlinkaccount [admin]> <gettoken> || <verifytoken token> || <help>"

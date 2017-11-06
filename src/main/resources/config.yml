@@ -1,5 +1,8 @@
 #============ VerifyMe ============#
 
+# Should Forum Verification be enabled?
+ForumVerification: true
+
 # The URL of the forums.
 ForumURL: ''
 
@@ -9,3 +12,9 @@ ForumPassword: ''
 
 # Name of the forum bot.
 BotName: ''
+
+# Should Discord Verification be enabled?
+DiscordVerification: true
+
+# The token for the discord bot.
+DiscordBotToken: ''
