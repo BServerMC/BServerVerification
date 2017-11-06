@@ -11,8 +11,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.Random;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class Command_discord implements CommandExecutor
@@ -163,7 +161,7 @@ public class Command_discord implements CommandExecutor
                         }
                         playerSender.sendMessage(ChatColor.GREEN + "VerifyMe Discord Verification Usage");
     
-                        playerSender.sendMessage(ChatColor.RED + "As an supered admin:");
+                        playerSender.sendMessage(ChatColor.RED + "As a supered admin:");
                         playerSender.sendMessage(ChatColor.BLUE + "1. Run the command /discord linkaccount");
                         playerSender.sendMessage(ChatColor.BLUE + "2. Copy the code that command gave you and jump on discord, from there PM the bot named " + plugin.dutils.bot.getSelfUser().getName() + " with the token.");
                         playerSender.sendMessage(ChatColor.BLUE + "3. After a couple seconds you should get a confirmation message in chat. Your account is linked!");

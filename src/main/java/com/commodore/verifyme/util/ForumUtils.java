@@ -15,7 +15,6 @@ import org.openqa.selenium.WebElement;
 
 public class ForumUtils
 {
-    
     public HashMap<Admin, String> LINK_CODES = new HashMap<>();
     public HashMap<Admin, String> VERIFY_CODES = new HashMap<>();
     public boolean enabled = false;

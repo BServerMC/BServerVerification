@@ -11,7 +11,7 @@ ForumUsername: ''
 ForumPassword: ''
 
 # Name of the forum bot.
-BotName: ''
+ForumBotName: ''
 
 # Should Discord Verification be enabled?
 DiscordVerification: true

@@ -71,9 +71,24 @@ public class VerifyMe extends JavaPlugin
             vlog.info("Config generated!");
             saveDefaultConfig();
         }
-        if(getConfig().getString("BotName").isEmpty() || getConfig().getString("ForumUsername").isEmpty() || getConfig().getString("ForumPassword").isEmpty() || getConfig().getString("ForumURL").isEmpty())
+        validateConfig();
+    }
+    
+    private void validateConfig()
+    {
+        if(getConfig().getBoolean("ForumVerification"))
         {
-            vlog.warning("You have not filled out the config! This will cause issues in operation.");
+            if(getConfig().getString("ForumBotName").isEmpty() || getConfig().getString("ForumUsername").isEmpty() || getConfig().getString("ForumPassword").isEmpty() || getConfig().getString("ForumURL").isEmpty())
+            {
+                vlog.warning("You have not filled out the config! This will cause issues in operation.");
+            }
+        }
+        if(getConfig().getBoolean("DiscordVerification"))
+        {
+            if(getConfig().getString("DiscordBotToken").isEmpty())
+            {
+                vlog.warning("You have not filled out the config! This will cause issues in operation.");
+            }
         }
     }
     
