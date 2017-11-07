@@ -112,11 +112,11 @@ public class Command_discord implements CommandExecutor
                             playerSender.sendMessage(ChatColor.RED + "The VerifyMe Discord Verification System is currently disabled.");
                             return true;
                         }
-                        if(!plugin.tfm.al.isAdminImpostor(playerSender))
+                      /*  if(!plugin.tfm.al.isAdminImpostor(playerSender))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You are not an impostor!");
                             return true;
-                        }
+                        } */
                         
                         Admin verifyAdmin = plugin.tfm.al.getEntryByName(playerSender.getName());
                         if(!plugin.sutils.hasAlreadyLinkedDiscordAccount(verifyAdmin.getName()))
@@ -185,11 +185,11 @@ public class Command_discord implements CommandExecutor
                             playerSender.sendMessage(ChatColor.RED + "The VerifyMe Discord Verification System is currently disabled.");
                             return true;
                         }
-                        if(!plugin.tfm.al.isAdminImpostor(playerSender))
+                    /*    if(!plugin.tfm.al.isAdminImpostor(playerSender))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You are not an impostor!");
                             return true;
-                        }
+                        } */
                         Admin admin = plugin.tfm.al.getEntryByName(playerSender.getName());
                         if(!plugin.dutils.VERIFY_CODES.keySet().contains(admin))
                         {

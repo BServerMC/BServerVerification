@@ -115,11 +115,11 @@ public class Command_forum implements CommandExecutor
                             playerSender.sendMessage(ChatColor.RED + "The VerifyMe Forum Verification System is currently disabled.");
                             return true;
                         }
-                        if(!plugin.tfm.al.isAdminImpostor(playerSender))
+                   /*     if(!plugin.tfm.al.isAdminImpostor(playerSender))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You are not an impostor!");
                             return true;
-                        }
+                        }*/
                         
                         Admin verifyAdmin = plugin.tfm.al.getEntryByName(playerSender.getName());
                         if(!plugin.sutils.hasAlreadyLinkedForumAccount(verifyAdmin.getName()))
@@ -135,7 +135,7 @@ public class Command_forum implements CommandExecutor
                         
                         String verifyToken = plugin.futils.generateToken();
                         plugin.futils.VERIFY_CODES.put(verifyAdmin, verifyToken);
-                        plugin.futils.sendNewPmTask(plugin.sutils.getForumUsername(verifyAdmin), "Verify your account.", "Hi! Someone with the IP: " + Ips.getIp(playerSender) + " just logged in with your account and tried to verify. If this is you please run the command: /verifyme verifytoken " + verifyToken);
+                        plugin.futils.sendNewPmTask(plugin.sutils.getForumUsername(verifyAdmin), "Verify your account.", "Hi! Someone with the IP: " + Ips.getIp(playerSender) + " just logged in with your account and tried to verify. If this is you please run the command: /forum verifytoken " + verifyToken);
                         playerSender.sendMessage(ChatColor.GREEN + "A verification token has been sent to your forum account. It will expire in 10 minutes.");
                         new BukkitRunnable()
                         {
@@ -165,13 +165,13 @@ public class Command_forum implements CommandExecutor
                         playerSender.sendMessage(ChatColor.GREEN + "VerifyMe Forum Verification Usage");
                         
                         playerSender.sendMessage(ChatColor.RED + "As a supered admin:");
-                        playerSender.sendMessage(ChatColor.BLUE + "1. Run the command /verifyme linkaccount");
+                        playerSender.sendMessage(ChatColor.BLUE + "1. Run the command /forum linkaccount");
                         playerSender.sendMessage(ChatColor.BLUE + "2. Copy the code that command gave you and jump on the forums, from there PM the bot named " + plugin.getConfig().getString("ForumBotName") + " with the token.");
                         playerSender.sendMessage(ChatColor.BLUE + "3. Make sure the body of the message contains the token, the subject can be anything.");
                         playerSender.sendMessage(ChatColor.BLUE + "4. After a couple seconds you should get a confirmation message in chat. Your account is linked!");
                         
                         playerSender.sendMessage(ChatColor.RED + "As an impostor:");
-                        playerSender.sendMessage(ChatColor.BLUE + "1. Run the command /verifyme gettoken");
+                        playerSender.sendMessage(ChatColor.BLUE + "1. Run the command /forum gettoken");
                         playerSender.sendMessage(ChatColor.BLUE + "2. Jump on the forums and you should find a PM containing the IP of the impostor and a token has been sent to you.");
                         playerSender.sendMessage(ChatColor.BLUE + "3. Copy the command and run it ingame.");
                         playerSender.sendMessage(ChatColor.BLUE + "4. You are now supered!");
@@ -189,11 +189,11 @@ public class Command_forum implements CommandExecutor
                             playerSender.sendMessage(ChatColor.RED + "The VerifyMe Forum Verification System is currently disabled.");
                             return true;
                         }
-                        if(!plugin.tfm.al.isAdminImpostor(playerSender))
+                      /*  if(!plugin.tfm.al.isAdminImpostor(playerSender))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You are not an impostor!");
                             return true;
-                        }
+                        } */
                         Admin admin = plugin.tfm.al.getEntryByName(playerSender.getName());
                         if(!plugin.futils.VERIFY_CODES.keySet().contains(admin))
                         {

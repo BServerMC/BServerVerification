@@ -32,14 +32,7 @@ public class DiscordUtils extends ListenerAdapter
     
     public void start()
     {
-        if(plugin.getConfig().getBoolean("DiscordVerification") && !plugin.getConfig().getString("DiscordBotToken").isEmpty())
-        {
-            enabled = true;
-        }
-        else
-        {
-            plugin.vlog.warning("No VerifyMe Discord Verification Bot token was specified, the VerifyMe Discord Verification System will be unavailable.");
-        }
+        enabled = plugin.getConfig().getBoolean("DiscordVerification") && !plugin.getConfig().getString("DiscordBotToken").isEmpty();
         if(this.enabled)
         {
             try
@@ -62,6 +55,10 @@ public class DiscordUtils extends ListenerAdapter
             {
                 plugin.vlog.warning("The VerifyMe Discord Verification System failed to start due to rate-limiting.");
             }
+        }
+        else if(plugin.getConfig().getString("DiscordBotToken").isEmpty())
+        {
+            plugin.vlog.warning("No VerifyMe Discord Verification Bot token was specified, the VerifyMe Discord Verification System will be unavailable.");
         }
     }
     

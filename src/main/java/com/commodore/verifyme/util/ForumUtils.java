@@ -29,20 +29,12 @@ public class ForumUtils
     
     public void start()
     {
-        if(plugin.getConfig().getBoolean("ForumVerification"))
-        {
-            enabled = true;
-        }
+        enabled = plugin.getConfig().getBoolean("ForumVerification")
+                  && !plugin.getConfig().getString("ForumBotName").isEmpty()
+                  && !plugin.getConfig().getString("ForumUsername").isEmpty()
+                  && !plugin.getConfig().getString("ForumPassword").isEmpty()
+                  && !plugin.getConfig().getString("ForumURL").isEmpty();
     }
-    public final List<String> FORUM_ADMIN_RANKS = Arrays.asList(
-            "Server Owner",
-            "Administrator",
-            "Administrators",
-            "Developer",
-            "Senior Admin",
-            "Telnet Clan. Admin",
-            "Telnet Super Admin",
-            "Super Admin");
     
     public String generateToken()
     {
@@ -101,10 +93,8 @@ public class ForumUtils
         List<WebElement> conversations = driver.findElements(By.className("conversation"));
         for(int i = 0;i < conversations.size();i++)
         {
-            // Is there a new PM?
             if(doesElementExist(conversations.get(i).findElement(By.className("icon")), By.cssSelector("img[src='//storage.proboards.com/forum/images/icons/message-new.png']")))
             {
-                // If so, enter PM
                 conversations.get(i).findElement(By.className("conversation-link")).click();
                 
                 String msg = driver.findElement(By.className("item")).findElement(By.className("message")).getText().trim();
@@ -124,7 +114,7 @@ public class ForumUtils
                     conversations = driver.findElements(By.className("conversation"));
                     continue;
                 }
-                if(!msg.matches("[0-9][0-9][0-9][0-9][0-9]"))
+                if(!msg.matches("[0-9][0-9][0-9][0-9][0-9][0-9]"))
                 {
                     player.sendMessage(ChatColor.RED + "The specified token is presented in an invalid format.");
                     driver.navigate().back();

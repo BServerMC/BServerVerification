@@ -56,8 +56,14 @@ public class VerifyMe extends JavaPlugin
     {
         dutils.LINK_CODES.clear();
         dutils.VERIFY_CODES.clear();
+        dutils.enabled = false;
         futils.LINK_CODES.clear();
         futils.VERIFY_CODES.clear();
+        dutils.enabled = false;
+        for(Object o : dutils.bot.getRegisteredListeners())
+        {
+            dutils.bot.removeEventListener(o);
+        }
         vlog.info("VerifyMe v1.0 disabled.");
     }
     
@@ -74,22 +80,26 @@ public class VerifyMe extends JavaPlugin
         validateConfig();
     }
     
-    private void validateConfig()
+    private boolean validateConfig()
     {
         if(getConfig().getBoolean("ForumVerification"))
         {
             if(getConfig().getString("ForumBotName").isEmpty() || getConfig().getString("ForumUsername").isEmpty() || getConfig().getString("ForumPassword").isEmpty() || getConfig().getString("ForumURL").isEmpty())
             {
                 vlog.warning("You have not filled out the config! This will cause issues in operation.");
+                return false;
             }
+            return true;
         }
         if(getConfig().getBoolean("DiscordVerification"))
         {
             if(getConfig().getString("DiscordBotToken").isEmpty())
             {
                 vlog.warning("You have not filled out the config! This will cause issues in operation.");
+                return false;
             }
+            return true;
         }
+        return true;
     }
-    
 }
