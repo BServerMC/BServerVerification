@@ -112,11 +112,11 @@ public class Command_discord implements CommandExecutor
                             playerSender.sendMessage(ChatColor.RED + "The VerifyMe Discord Verification System is currently disabled.");
                             return true;
                         }
-                      /*  if(!plugin.tfm.al.isAdminImpostor(playerSender))
+                        if(!plugin.tfm.al.isAdminImpostor(playerSender))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You are not an impostor!");
                             return true;
-                        } */
+                        }
                         
                         Admin verifyAdmin = plugin.tfm.al.getEntryByName(playerSender.getName());
                         if(!plugin.sutils.hasAlreadyLinkedDiscordAccount(verifyAdmin.getName()))
@@ -160,12 +160,12 @@ public class Command_discord implements CommandExecutor
                             return true;
                         }
                         playerSender.sendMessage(ChatColor.GREEN + "VerifyMe Discord Verification Usage");
-    
+                        
                         playerSender.sendMessage(ChatColor.RED + "As a supered admin:");
                         playerSender.sendMessage(ChatColor.BLUE + "1. Run the command /discord linkaccount");
                         playerSender.sendMessage(ChatColor.BLUE + "2. Copy the code that command gave you and jump on discord, from there PM the bot named " + plugin.dutils.bot.getSelfUser().getName() + " with the token.");
                         playerSender.sendMessage(ChatColor.BLUE + "3. After a couple seconds you should get a confirmation message in chat. Your account is linked!");
-    
+                        
                         playerSender.sendMessage(ChatColor.RED + "As an impostor:");
                         playerSender.sendMessage(ChatColor.BLUE + "1. Run the command /discord gettoken");
                         playerSender.sendMessage(ChatColor.BLUE + "2. Jump on discord and you should find a DM containing the IP of the impostor and a token has been sent to you.");
@@ -185,18 +185,18 @@ public class Command_discord implements CommandExecutor
                             playerSender.sendMessage(ChatColor.RED + "The VerifyMe Discord Verification System is currently disabled.");
                             return true;
                         }
-                    /*    if(!plugin.tfm.al.isAdminImpostor(playerSender))
+                        if(!plugin.tfm.al.isAdminImpostor(playerSender))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You are not an impostor!");
                             return true;
-                        } */
+                        }
                         Admin admin = plugin.tfm.al.getEntryByName(playerSender.getName());
                         if(!plugin.dutils.VERIFY_CODES.keySet().contains(admin))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You have not been given a token.");
                             return true;
                         }
-    
+                        
                         String token = args[1];
                         if(!plugin.dutils.VERIFY_CODES.get(admin).equals(token))
                         {

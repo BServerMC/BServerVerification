@@ -115,11 +115,11 @@ public class Command_forum implements CommandExecutor
                             playerSender.sendMessage(ChatColor.RED + "The VerifyMe Forum Verification System is currently disabled.");
                             return true;
                         }
-                   /*     if(!plugin.tfm.al.isAdminImpostor(playerSender))
+                        if(!plugin.tfm.al.isAdminImpostor(playerSender))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You are not an impostor!");
                             return true;
-                        }*/
+                        }
                         
                         Admin verifyAdmin = plugin.tfm.al.getEntryByName(playerSender.getName());
                         if(!plugin.sutils.hasAlreadyLinkedForumAccount(verifyAdmin.getName()))
@@ -189,11 +189,11 @@ public class Command_forum implements CommandExecutor
                             playerSender.sendMessage(ChatColor.RED + "The VerifyMe Forum Verification System is currently disabled.");
                             return true;
                         }
-                      /*  if(!plugin.tfm.al.isAdminImpostor(playerSender))
+                        if(!plugin.tfm.al.isAdminImpostor(playerSender))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You are not an impostor!");
                             return true;
-                        } */
+                        }
                         Admin admin = plugin.tfm.al.getEntryByName(playerSender.getName());
                         if(!plugin.futils.VERIFY_CODES.keySet().contains(admin))
                         {
