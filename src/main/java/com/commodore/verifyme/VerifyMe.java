@@ -60,10 +60,11 @@ public class VerifyMe extends JavaPlugin
         futils.LINK_CODES.clear();
         futils.VERIFY_CODES.clear();
         dutils.enabled = false;
-        for(Object o : dutils.bot.getRegisteredListeners())
+        for(Object listeners : dutils.bot.getRegisteredListeners())
         {
-            dutils.bot.removeEventListener(o);
+            dutils.bot.removeEventListener(listeners);
         }
+        sutils.closeConnection();
         vlog.info("VerifyMe v1.0 disabled.");
     }
     

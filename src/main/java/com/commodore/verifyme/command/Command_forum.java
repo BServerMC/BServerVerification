@@ -1,6 +1,7 @@
 package com.commodore.verifyme.command;
 
 import com.commodore.verifyme.VerifyMe;
+import com.commodore.verifyme.util.LinkedAccountType;
 import java.util.Date;
 import me.totalfreedom.totalfreedommod.admin.Admin;
 import me.totalfreedom.totalfreedommod.rank.Rank;
@@ -53,7 +54,7 @@ public class Command_forum implements CommandExecutor
                         }
                         
                         Admin linkAdmin = plugin.tfm.al.getAdmin(playerSender);
-                        if(plugin.sutils.hasAlreadyLinkedForumAccount(linkAdmin.getName()))
+                        if(plugin.sutils.hasAlreadyLinkedAccount(linkAdmin.getName(), LinkedAccountType.FORUM))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You have already linked a forum account to your account!");
                             return true;
@@ -101,12 +102,12 @@ public class Command_forum implements CommandExecutor
                         }
                         
                         Admin unlinkAdmin = plugin.tfm.al.getAdmin(playerSender);
-                        if(!plugin.sutils.hasAlreadyLinkedForumAccount(unlinkAdmin.getName()))
+                        if(!plugin.sutils.hasAlreadyLinkedAccount(unlinkAdmin.getName(), LinkedAccountType.FORUM))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You have not got a forum account linked to this account!");
                             return true;
                         }
-                        plugin.sutils.deleteForumAccountFromStorage(unlinkAdmin.getName());
+                        plugin.sutils.deleteAccountFromStorage(unlinkAdmin.getName(), LinkedAccountType.FORUM);
                         playerSender.sendMessage(ChatColor.GREEN + "Your forum account has been unlinked from this account.");
                         return true;
                     case "gettoken":
@@ -122,7 +123,7 @@ public class Command_forum implements CommandExecutor
                         }
                         
                         Admin verifyAdmin = plugin.tfm.al.getEntryByName(playerSender.getName());
-                        if(!plugin.sutils.hasAlreadyLinkedForumAccount(verifyAdmin.getName()))
+                        if(!plugin.sutils.hasAlreadyLinkedAccount(verifyAdmin.getName(), LinkedAccountType.FORUM))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You have not got a forum account linked to this account!");
                             return true;
@@ -229,12 +230,12 @@ public class Command_forum implements CommandExecutor
                             return true;
                         }
                         String adminName = args[1];
-                        if(!plugin.sutils.hasAlreadyLinkedForumAccount(adminName))
+                        if(!plugin.sutils.hasAlreadyLinkedAccount(adminName, LinkedAccountType.FORUM))
                         {
                             playerSender.sendMessage(ChatColor.RED + adminName + " does not have a forum account linked to this account!");
                             return true;
                         }
-                        plugin.sutils.deleteForumAccountFromStorage(adminName);
+                        plugin.sutils.deleteAccountFromStorage(adminName, LinkedAccountType.FORUM);
                         playerSender.sendMessage(ChatColor.GREEN + adminName + " has had their forum account unlinked from this account.");
                         return true;
                     default:

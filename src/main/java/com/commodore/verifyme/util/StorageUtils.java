@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import me.totalfreedom.totalfreedommod.admin.Admin;
+import me.totalfreedom.totalfreedommod.config.ConfigEntry;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -17,7 +18,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public class StorageUtils
 {
     private VerifyMe plugin;
-    public Connection connection;
+    private Connection connection;
     
     public StorageUtils(VerifyMe plugin)
     {
@@ -36,13 +37,10 @@ public class StorageUtils
                 if(this.connection != null)
                 {
                     plugin.vlog.info("Cannot find database file, Generating now...");
-                    final String fsql = "CREATE TABLE IF NOT EXISTS forumverifiedadmins(adminname text PRIMARY KEY, forumname text NOT NULL, lastlogin integer NOT NULL);";
-                    this.connection.createStatement().execute(fsql);
-                    final String dsql = "CREATE TABLE IF NOT EXISTS discordverifiedadmins(adminname text PRIMARY KEY, discordid text NOT NULL, lastlogin integer NOT NULL);";
-                    this.connection.createStatement().execute(dsql);
+                    this.connection.createStatement().execute("CREATE TABLE IF NOT EXISTS forumverifiedadmins(adminname text PRIMARY KEY, forumname text NOT NULL, lastlogin integer NOT NULL);");
+                    this.connection.createStatement().execute("CREATE TABLE IF NOT EXISTS discordverifiedadmins(adminname text PRIMARY KEY, discordid text NOT NULL, lastlogin integer NOT NULL);");
                     plugin.vlog.info("Storage generated!");
                 }
-                
             }
             else
             {
@@ -60,11 +58,23 @@ public class StorageUtils
         }
     }
     
-    public boolean hasAlreadyLinkedForumAccount(String adminName)
+    public boolean hasAlreadyLinkedAccount(String adminName, LinkedAccountType type)
     {
+        String sql;
+        switch(type)
+        {
+            case DISCORD:
+                sql = "SELECT adminname from discordverifiedadmins WHERE adminname = ?;";
+                break;
+            
+            case FORUM:
+                sql = "SELECT adminname from forumverifiedadmins WHERE adminname = ?;";
+                break;
+            default:
+                return false;
+        }
         try
         {
-            final String sql = "SELECT adminname from forumverifiedadmins WHERE adminname = ?;";
             final PreparedStatement ps = this.connection.prepareStatement(sql);
             ps.setString(1, adminName);
             ResultSet set = ps.executeQuery();
@@ -83,37 +93,26 @@ public class StorageUtils
         }
     }
     
-    public boolean hasAlreadyLinkedDiscordAccount(String adminName)
+    public void addAccountToStorage(Admin admin, String data, LinkedAccountType type)
     {
+        String sql;
+        switch(type)
+        {
+            case DISCORD:
+                sql = "INSERT INTO discordverifiedadmins(adminname, discordid, lastlogin) VALUES(?, ?, ?);";
+                break;
+            
+            case FORUM:
+                sql = "INSERT INTO forumverifiedadmins(adminname, forumname, lastlogin) VALUES(?, ?, ?);";
+                break;
+            default:
+                return;
+        }
         try
         {
-            final String sql = "SELECT adminname from discordverifiedadmins WHERE adminname = ?;";
-            final PreparedStatement ps = this.connection.prepareStatement(sql);
-            ps.setString(1, adminName);
-            ResultSet set = ps.executeQuery();
-            if(set.next())
-            {
-                boolean hasAlreadyLinkedAccount = !set.getString("adminname").isEmpty();
-                ps.close();
-                return hasAlreadyLinkedAccount;
-            }
-            return false;
-        }
-        catch(SQLException e)
-        {
-            plugin.vlog.severe(e.getMessage());
-            return false;
-        }
-    }
-    
-    public void addForumAccountToStorage(Admin admin, String forumUsername)
-    {
-        try
-        {
-            final String sql = "INSERT INTO forumverifiedadmins(adminname, forumname, lastlogin) VALUES(?, ?, ?);";
             final PreparedStatement ps = this.connection.prepareStatement(sql);
             ps.setString(1, admin.getName());
-            ps.setString(2, forumUsername);
+            ps.setString(2, data);
             ps.setLong(3, admin.getLastLogin().getTime());
             ps.executeUpdate();
             ps.close();
@@ -124,45 +123,23 @@ public class StorageUtils
         }
     }
     
-    public void addDiscordAccountToStorage(Admin admin, String discordId)
+    public void deleteAccountFromStorage(String adminName, LinkedAccountType type)
     {
+        String sql;
+        switch(type)
+        {
+            case DISCORD:
+                sql = "DELETE FROM discordverifiedadmins WHERE adminname = ?;";
+                break;
+            
+            case FORUM:
+                sql = "DELETE FROM forumverifiedadmins WHERE adminname = ?;";
+                break;
+            default:
+                return;
+        }
         try
         {
-            final String sql = "INSERT INTO discordverifiedadmins(adminname, discordid, lastlogin) VALUES(?, ?, ?);";
-            final PreparedStatement ps = this.connection.prepareStatement(sql);
-            ps.setString(1, admin.getName());
-            ps.setString(2, discordId);
-            ps.setLong(3, admin.getLastLogin().getTime());
-            ps.executeUpdate();
-            ps.close();
-        }
-        catch(SQLException e)
-        {
-            plugin.vlog.severe(e.getMessage());
-        }
-    }
-    
-    public void deleteForumAccountFromStorage(String adminName)
-    {
-        try
-        {
-            String sql = "DELETE FROM forumverifiedadmins WHERE adminname = ?;";
-            final PreparedStatement ps = this.connection.prepareStatement(sql);
-            ps.setString(1, adminName);
-            ps.executeUpdate();
-            ps.close();
-        }
-        catch(SQLException e)
-        {
-            plugin.vlog.severe(e.getMessage());
-        }
-    }
-    
-    public void deleteDiscordAccountFromStorage(String adminName)
-    {
-        try
-        {
-            String sql = "DELETE FROM discordverifiedadmins WHERE adminname = ?;";
             final PreparedStatement ps = this.connection.prepareStatement(sql);
             ps.setString(1, adminName);
             ps.executeUpdate();
@@ -178,8 +155,7 @@ public class StorageUtils
     {
         try
         {
-            final String sql = "SELECT forumname FROM forumverifiedadmins WHERE adminname = ?;";
-            final PreparedStatement ps = this.connection.prepareStatement(sql);
+            final PreparedStatement ps = this.connection.prepareStatement("SELECT forumname FROM forumverifiedadmins WHERE adminname = ?;");
             ps.setString(1, admin.getName());
             ResultSet set = ps.executeQuery();
             if(set.next())
@@ -202,8 +178,7 @@ public class StorageUtils
     {
         try
         {
-            final String sql = "SELECT discordid FROM discordverifiedadmins WHERE adminname = ?;";
-            final PreparedStatement ps = this.connection.prepareStatement(sql);
+            final PreparedStatement ps = this.connection.prepareStatement("SELECT discordid FROM discordverifiedadmins WHERE adminname = ?;");
             ps.setString(1, admin.getName());
             ResultSet set = ps.executeQuery();
             if(set.next())
@@ -228,70 +203,69 @@ public class StorageUtils
         {
             for(Admin admin : plugin.tfm.al.getAllAdmins().values())
             {
-                String fsql = "SELECT lastlogin FROM forumverifiedadmins WHERE adminname = ?;";
-                PreparedStatement fps = this.connection.prepareStatement(fsql);
-                fps.setString(1, admin.getName());
-                ResultSet fset = fps.executeQuery();
-                if(fset.next())
+                for(LinkedAccountType type : LinkedAccountType.values())
                 {
-                    long lastLogin = fset.getLong("lastlogin");
-                    final long lastLoginHours = TimeUnit.HOURS.convert(new Date().getTime() - lastLogin, TimeUnit.MILLISECONDS);
-                    if(lastLoginHours > 40)
+                    String sql;
+                    switch(type)
                     {
-                        plugin.vlog.info(admin.getName() + " has been purged from the database.");
-                        deleteForumAccountFromStorage(admin.getName());
-                        fps.close();
+                        case DISCORD:
+                            sql = "SELECT lastlogin FROM discordverifiedadmins WHERE adminname = ?;";
+                            break;
+                        
+                        case FORUM:
+                            sql = "SELECT lastlogin FROM forumverifiedadmins WHERE adminname = ?;";
+                            break;
+                        default:
+                            return;
                     }
-                    fps.close();
-                }
-                fps.close();
-                
-                String dsql = "SELECT lastlogin FROM discordverifiedadmins WHERE adminname = ?;";
-                PreparedStatement dps = this.connection.prepareStatement(dsql);
-                dps.setString(1, admin.getName());
-                ResultSet dset = dps.executeQuery();
-                if(dset.next())
-                {
-                    long lastLogin = dset.getLong("lastlogin");
-                    final long lastLoginHours = TimeUnit.HOURS.convert(new Date().getTime() - lastLogin, TimeUnit.MILLISECONDS);
-                    if(lastLoginHours > 40)
+                    
+                    PreparedStatement ps = this.connection.prepareStatement(sql);
+                    ps.setString(1, admin.getName());
+                    ResultSet set = ps.executeQuery();
+                    if(set.next())
                     {
-                        plugin.vlog.info(admin.getName() + " has been purged from the database.");
-                        deleteDiscordAccountFromStorage(admin.getName());
-                        dps.close();
+                        long lastLogin = set.getLong("lastlogin");
+                        final long lastLoginHours = TimeUnit.HOURS.convert(new Date().getTime() - lastLogin, TimeUnit.MILLISECONDS);
+                        if(lastLoginHours > ConfigEntry.ADMINLIST_CLEAN_THESHOLD_HOURS.getInteger())
+                        {
+                            plugin.vlog.info(admin.getName() + " has been purged from the database.");
+                            this.deleteAccountFromStorage(admin.getName(), type);
+                            ps.close();
+                        }
+                        ps.close();
                     }
-                    dps.close();
+                    ps.close();
                 }
-                dps.close();
             }
             
-            final String fsql = "SELECT adminname FROM forumverifiedadmins;";
-            final PreparedStatement fps = this.connection.prepareStatement(fsql);
-            ResultSet fset = fps.executeQuery();
-            while(fset.next())
+            for(LinkedAccountType type : LinkedAccountType.values())
             {
-                String adminName = fset.getString("adminname");
-                Admin admin = plugin.tfm.al.getEntryByName(adminName);
-                if(admin == null)
+                String sql;
+                switch(type)
                 {
-                    deleteForumAccountFromStorage(adminName);
+                    case DISCORD:
+                        sql = "SELECT adminname FROM discordverifiedadmins;";
+                        break;
+                    
+                    case FORUM:
+                        sql = "SELECT adminname FROM forumverifiedadmins;";
+                        break;
+                    default:
+                        return;
                 }
-            }
-            fps.close();
-            
-            final String dsql = "SELECT adminname FROM discordverifiedadmins;";
-            final PreparedStatement dps = this.connection.prepareStatement(dsql);
-            ResultSet dset = dps.executeQuery();
-            while(dset.next())
-            {
-                String adminName = dset.getString("adminname");
-                Admin admin = plugin.tfm.al.getEntryByName(adminName);
-                if(admin == null)
+                final PreparedStatement ps = this.connection.prepareStatement(sql);
+                ResultSet set = ps.executeQuery();
+                while(set.next())
                 {
-                    deleteForumAccountFromStorage(adminName);
+                    String adminName = set.getString("adminname");
+                    Admin admin = plugin.tfm.al.getEntryByName(adminName);
+                    if(admin == null)
+                    {
+                        deleteAccountFromStorage(adminName, type);
+                    }
                 }
+                ps.close();
             }
-            dps.close();
         }
         catch(SQLException e)
         {
@@ -299,16 +273,29 @@ public class StorageUtils
         }
     }
     
-    private void updateForumLastLogin(Admin admin)
+    
+    private void updateLastLogin(Admin admin, LinkedAccountType type)
     {
+        String sql;
+        switch(type)
+        {
+            case DISCORD:
+                sql = "UPDATE discordverifiedadmins SET lastlogin = ? WHERE adminname = ?;";
+                break;
+            
+            case FORUM:
+                sql = "UPDATE forumverifiedadmins SET lastlogin = ? WHERE adminname = ?;";
+                break;
+            default:
+                return;
+        }
         try
         {
-            final String fsql = "UPDATE forumverifiedadmins SET lastlogin = ? WHERE adminname = ?;";
-            final PreparedStatement fps = this.connection.prepareStatement(fsql);
-            fps.setLong(1, admin.getLastLogin().getTime());
-            fps.setString(2, admin.getName());
-            fps.executeUpdate();
-            fps.close();
+            final PreparedStatement ps = this.connection.prepareStatement(sql);
+            ps.setLong(1, admin.getLastLogin().getTime());
+            ps.setString(2, admin.getName());
+            ps.executeUpdate();
+            ps.close();
         }
         catch(SQLException e)
         {
@@ -316,16 +303,11 @@ public class StorageUtils
         }
     }
     
-    private void updateDiscordLastLogin(Admin admin)
+    public void closeConnection()
     {
         try
         {
-            final String dsql = "UPDATE discordverifiedadmins SET lastlogin = ? WHERE adminname = ?;";
-            final PreparedStatement dps = this.connection.prepareStatement(dsql);
-            dps.setLong(1, admin.getLastLogin().getTime());
-            dps.setString(2, admin.getName());
-            dps.executeUpdate();
-            dps.close();
+            this.connection.close();
         }
         catch(SQLException e)
         {
@@ -339,13 +321,12 @@ public class StorageUtils
         Player player = event.getPlayer();
         if(plugin.tfm.al.isAdmin(player))
         {
-            if(this.hasAlreadyLinkedDiscordAccount(player.getName()))
+            for(LinkedAccountType type : LinkedAccountType.values())
             {
-                updateDiscordLastLogin(plugin.tfm.al.getAdmin(player));
-            }
-            else if(this.hasAlreadyLinkedForumAccount(player.getName()))
-            {
-                updateForumLastLogin(plugin.tfm.al.getAdmin(player));
+                if(this.hasAlreadyLinkedAccount(player.getName(), type))
+                {
+                    this.updateLastLogin(plugin.tfm.al.getAdmin(player), type);
+                }
             }
         }
     }

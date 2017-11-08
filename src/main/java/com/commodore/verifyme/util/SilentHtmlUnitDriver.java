@@ -6,9 +6,9 @@ import java.util.logging.Logger;
 import org.apache.http.client.protocol.ResponseProcessCookies;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
-public class SilentHtmlUnitDriver extends HtmlUnitDriver
+class SilentHtmlUnitDriver extends HtmlUnitDriver
 {
-    public SilentHtmlUnitDriver()
+    SilentHtmlUnitDriver()
     {
         super();
         Logger.getLogger(ResponseProcessCookies.class.getName()).setLevel(Level.OFF);

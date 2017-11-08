@@ -2,7 +2,6 @@ package com.commodore.verifyme.util;
 
 import com.commodore.verifyme.VerifyMe;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -69,15 +68,14 @@ public class DiscordUtils extends ListenerAdapter
         if(!event.getAuthor().getId().equals(this.bot.getSelfUser().getId()) && token.matches("[0-9][0-9][0-9][0-9][0-9][0-9]"))
         {
             Set set = this.LINK_CODES.entrySet();
-            Iterator i = set.iterator();
-            while(i.hasNext())
+            for(Object linkEntry : set)
             {
-                Map.Entry me = (Map.Entry) i.next();
+                Map.Entry me = (Map.Entry) linkEntry;
                 if(me.getValue().toString().equals(token))
                 {
                     Admin admin = (Admin) me.getKey();
                     LINK_CODES.remove(admin);
-                    plugin.sutils.addDiscordAccountToStorage(admin, event.getAuthor().getId());
+                    plugin.sutils.addAccountToStorage(admin, event.getAuthor().getId(), LinkedAccountType.DISCORD);
                     event.getChannel().sendMessage("Your discord account has been successfully linked to your ingame account.").queue();
                     break;
                 }

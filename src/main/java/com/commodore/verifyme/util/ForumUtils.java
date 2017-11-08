@@ -1,7 +1,6 @@
 package com.commodore.verifyme.util;
 
 import com.commodore.verifyme.VerifyMe;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -36,17 +35,6 @@ public class ForumUtils
                   && !plugin.getConfig().getString("ForumURL").isEmpty();
     }
     
-    public String generateToken()
-    {
-        StringBuilder code = new StringBuilder();
-        Random random = new Random();
-        for(int i = 0;i < 6;i++)
-        {
-            code.append(random.nextInt(10));
-        }
-        return code.toString();
-    }
-    
     private boolean doesElementExist(WebElement driver, By by)
     {
         try
@@ -60,7 +48,7 @@ public class ForumUtils
         return true;
     }
     
-    public void sendPM(final String forumUsername, final String subject, final String message)
+    private void sendPM(final String forumUsername, final String subject, final String message)
     {
         SilentHtmlUnitDriver driver = new SilentHtmlUnitDriver();
         driver.get(plugin.getConfig().getString("ForumURL"));
@@ -79,7 +67,7 @@ public class ForumUtils
         driver.close();
     }
     
-    public boolean findNewPM(Player player)
+    private boolean findNewPM(Player player)
     {
         SilentHtmlUnitDriver driver = new SilentHtmlUnitDriver();
         driver.get(plugin.getConfig().getString("ForumURL"));
@@ -123,7 +111,7 @@ public class ForumUtils
                 }
                 
                 LINK_CODES.remove(admin);
-                plugin.sutils.addForumAccountToStorage(admin, forumUsername);
+                plugin.sutils.addAccountToStorage(admin, forumUsername, LinkedAccountType.FORUM);
                 player.sendMessage(ChatColor.GREEN + "Your forum account has been successfully linked to your ingame account.");
                 driver.close();
                 return true;
@@ -164,5 +152,16 @@ public class ForumUtils
                 }
             }
         }.runTaskTimerAsynchronously(plugin, 20L * 15L, 20L * 15L);
+    }
+    
+    public String generateToken()
+    {
+        StringBuilder code = new StringBuilder();
+        Random random = new Random();
+        for(int i = 0;i < 6;i++)
+        {
+            code.append(random.nextInt(10));
+        }
+        return code.toString();
     }
 }

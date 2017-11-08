@@ -1,6 +1,7 @@
 package com.commodore.verifyme.command;
 
 import com.commodore.verifyme.VerifyMe;
+import com.commodore.verifyme.util.LinkedAccountType;
 import java.util.Date;
 import me.totalfreedom.totalfreedommod.admin.Admin;
 import me.totalfreedom.totalfreedommod.rank.Rank;
@@ -53,7 +54,7 @@ public class Command_discord implements CommandExecutor
                             return true;
                         }
                         Admin linkAdmin = plugin.tfm.al.getAdmin(playerSender);
-                        if(plugin.sutils.hasAlreadyLinkedDiscordAccount(linkAdmin.getName()))
+                        if(plugin.sutils.hasAlreadyLinkedAccount(linkAdmin.getName(), LinkedAccountType.DISCORD))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You have already linked a discord account to your account!");
                             return true;
@@ -98,12 +99,12 @@ public class Command_discord implements CommandExecutor
                             return true;
                         }
                         Admin unlinkAdmin = plugin.tfm.al.getAdmin(playerSender);
-                        if(!plugin.sutils.hasAlreadyLinkedDiscordAccount(unlinkAdmin.getName()))
+                        if(!plugin.sutils.hasAlreadyLinkedAccount(unlinkAdmin.getName(), LinkedAccountType.DISCORD))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You have not got a discord account linked to this account!");
                             return true;
                         }
-                        plugin.sutils.deleteDiscordAccountFromStorage(unlinkAdmin.getName());
+                        plugin.sutils.deleteAccountFromStorage(unlinkAdmin.getName(), LinkedAccountType.DISCORD);
                         playerSender.sendMessage(ChatColor.GREEN + "Your discord account has been unlinked from this account.");
                         return true;
                     case "gettoken":
@@ -119,7 +120,7 @@ public class Command_discord implements CommandExecutor
                         }
                         
                         Admin verifyAdmin = plugin.tfm.al.getEntryByName(playerSender.getName());
-                        if(!plugin.sutils.hasAlreadyLinkedDiscordAccount(verifyAdmin.getName()))
+                        if(!plugin.sutils.hasAlreadyLinkedAccount(verifyAdmin.getName(), LinkedAccountType.DISCORD))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You have not got a discord account linked to this account!");
                             return true;
@@ -225,12 +226,12 @@ public class Command_discord implements CommandExecutor
                             return true;
                         }
                         String adminName = args[1];
-                        if(!plugin.sutils.hasAlreadyLinkedDiscordAccount(adminName))
+                        if(!plugin.sutils.hasAlreadyLinkedAccount(adminName, LinkedAccountType.DISCORD))
                         {
                             playerSender.sendMessage(ChatColor.RED + adminName + " does not have a discord account linked to this account!");
                             return true;
                         }
-                        plugin.sutils.deleteDiscordAccountFromStorage(adminName);
+                        plugin.sutils.deleteAccountFromStorage(adminName, LinkedAccountType.DISCORD);
                         playerSender.sendMessage(ChatColor.GREEN + adminName + " has had their discord account unlinked from this account.");
                         return true;
                     default:
