@@ -17,6 +17,7 @@ public class ForumUtils
     public HashMap<Admin, String> LINK_CODES = new HashMap<>();
     public HashMap<Admin, String> VERIFY_CODES = new HashMap<>();
     
+    public SilentHtmlUnitDriver bot = null;
     public boolean enabled = false;
     
     private VerifyMe plugin;
@@ -28,11 +29,32 @@ public class ForumUtils
     
     public void start()
     {
-        enabled = plugin.getConfig().getBoolean("ForumVerification")
-                  && !plugin.getConfig().getString("ForumBotName").isEmpty()
-                  && !plugin.getConfig().getString("ForumUsername").isEmpty()
-                  && !plugin.getConfig().getString("ForumPassword").isEmpty()
-                  && !plugin.getConfig().getString("ForumURL").isEmpty();
+        this.enabled = plugin.getConfig().getBoolean("ForumVerification")
+                       && !plugin.getConfig().getString("ForumBotName").isEmpty()
+                       && !plugin.getConfig().getString("ForumUsername").isEmpty()
+                       && !plugin.getConfig().getString("ForumPassword").isEmpty()
+                       && !plugin.getConfig().getString("ForumURL").isEmpty();
+        if(this.enabled)
+        {
+            try
+            {
+                bot = new SilentHtmlUnitDriver();
+                bot.get(plugin.getConfig().getString("ForumURL"));
+                bot.findElement(By.className("login")).click();
+                bot.findElement(By.cssSelector("input[name='email']")).sendKeys(plugin.getConfig().getString("ForumUsername"));
+                bot.findElement(By.cssSelector("input[name='password']")).sendKeys(plugin.getConfig().getString("ForumPassword"));
+                bot.findElement(By.cssSelector("input[name='continue']")).click();
+                bot.findElement(By.cssSelector("input[type='submit']")).click();
+                bot.close();
+                plugin.vlog.info("The VerifyMe Forum Verification System was enabled.");
+            }
+            catch(NoSuchElementException e)
+            {
+                bot.close();
+                plugin.vlog.warning("An invalid VerifyMe Forum Verification Bot username or password was specified, the VerifyMe Forum Verification System will be unavailable.");
+                this.enabled = false;
+            }
+        }
     }
     
     private boolean doesElementExist(WebElement driver, By by)
@@ -79,7 +101,7 @@ public class ForumUtils
         
         driver.findElement(By.cssSelector("a[href='/conversations']")).click();
         List<WebElement> conversations = driver.findElements(By.className("conversation"));
-        for(int i = 0;i < conversations.size();i++)
+        for(int i = 0; i < conversations.size(); i++)
         {
             if(doesElementExist(conversations.get(i).findElement(By.className("icon")), By.cssSelector("img[src='//storage.proboards.com/forum/images/icons/message-new.png']")))
             {
@@ -121,7 +143,6 @@ public class ForumUtils
         return false;
     }
     
-    
     public void sendNewPmTask(String forumUsername, String subject, String message)
     {
         new BukkitRunnable()
@@ -133,7 +154,6 @@ public class ForumUtils
             }
         }.runTaskAsynchronously(plugin);
     }
-    
     
     public void findNewPmTask(final Player player)
     {
@@ -152,16 +172,5 @@ public class ForumUtils
                 }
             }
         }.runTaskTimerAsynchronously(plugin, 20L * 15L, 20L * 15L);
-    }
-    
-    public String generateToken()
-    {
-        StringBuilder code = new StringBuilder();
-        Random random = new Random();
-        for(int i = 0;i < 6;i++)
-        {
-            code.append(random.nextInt(10));
-        }
-        return code.toString();
     }
 }

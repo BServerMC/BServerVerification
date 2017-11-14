@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import me.totalfreedom.totalfreedommod.admin.Admin;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
+import net.bytebuddy.dynamic.scaffold.MethodGraph;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -228,7 +229,7 @@ public class StorageUtils
                         final long lastLoginHours = TimeUnit.HOURS.convert(new Date().getTime() - lastLogin, TimeUnit.MILLISECONDS);
                         if(lastLoginHours > ConfigEntry.ADMINLIST_CLEAN_THESHOLD_HOURS.getInteger())
                         {
-                            plugin.vlog.info(admin.getName() + " has been purged from the database.");
+                            plugin.vlog.info(admin.getName() + " has been purged from the " + (type == LinkedAccountType.DISCORD ? "discord database." : "forum database."));
                             this.deleteAccountFromStorage(admin.getName(), type);
                             ps.close();
                         }
@@ -262,6 +263,7 @@ public class StorageUtils
                     if(admin == null)
                     {
                         deleteAccountFromStorage(adminName, type);
+                        plugin.vlog.info(adminName + " has been purged from the " + (type == LinkedAccountType.DISCORD ? "discord database." : "forum database."));
                     }
                 }
                 ps.close();

@@ -36,6 +36,11 @@ public class Command_forum implements CommandExecutor
         switch(args.length)
         {
             case 0:
+                if(!plugin.futils.enabled)
+                {
+                    playerSender.sendMessage(ChatColor.RED + "The VerifyMe Forum Verification System is currently disabled.");
+                    return true;
+                }
                 playerSender.sendMessage(ChatColor.RED + "You didn't specify enough arguments.");
                 return false;
             case 1:
@@ -67,7 +72,7 @@ public class Command_forum implements CommandExecutor
                             return true;
                         }
                         
-                        String linkingToken = plugin.futils.generateToken();
+                        String linkingToken = plugin.generateToken();
                         plugin.futils.LINK_CODES.put(linkAdmin, linkingToken);
                         
                         plugin.futils.findNewPmTask(playerSender);
@@ -134,7 +139,7 @@ public class Command_forum implements CommandExecutor
                             return true;
                         }
                         
-                        String verifyToken = plugin.futils.generateToken();
+                        String verifyToken = plugin.generateToken();
                         plugin.futils.VERIFY_CODES.put(verifyAdmin, verifyToken);
                         plugin.futils.sendNewPmTask(plugin.sutils.getForumUsername(verifyAdmin), "Verify your account.", "Hi! Someone with the IP: " + Ips.getIp(playerSender) + " just logged in with your account and tried to verify. If this is you please run the command: /forum verifytoken " + verifyToken);
                         playerSender.sendMessage(ChatColor.GREEN + "A verification token has been sent to your forum account. It will expire in 10 minutes.");
@@ -155,9 +160,19 @@ public class Command_forum implements CommandExecutor
                         }.runTaskLater(plugin, 600 * 20L);
                         return true;
                     case "verifytoken":
+                        if(!plugin.futils.enabled)
+                        {
+                            playerSender.sendMessage(ChatColor.RED + "The VerifyMe Forum Verification System is currently disabled.");
+                            return true;
+                        }
                         playerSender.sendMessage(ChatColor.RED + "You specified an invalid amount of arguments.");
                         return false;
                     case "help":
+                        if(!plugin.futils.enabled)
+                        {
+                            playerSender.sendMessage(ChatColor.RED + "The VerifyMe Forum Verification System is currently disabled.");
+                            return true;
+                        }
                         if(!(plugin.tfm.al.isAdmin(playerSender) || plugin.tfm.al.isAdminImpostor(playerSender)))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You are not authorised to use this command!");
@@ -178,6 +193,11 @@ public class Command_forum implements CommandExecutor
                         playerSender.sendMessage(ChatColor.BLUE + "4. You are now supered!");
                         return true;
                     default:
+                        if(!plugin.futils.enabled)
+                        {
+                            playerSender.sendMessage(ChatColor.RED + "The VerifyMe Forum Verification System is currently disabled.");
+                            return true;
+                        }
                         playerSender.sendMessage(ChatColor.RED + "You specified an invalid argument.");
                         return false;
                 }
@@ -239,10 +259,20 @@ public class Command_forum implements CommandExecutor
                         playerSender.sendMessage(ChatColor.GREEN + adminName + " has had their forum account unlinked from this account.");
                         return true;
                     default:
+                        if(!plugin.futils.enabled)
+                        {
+                            playerSender.sendMessage(ChatColor.RED + "The VerifyMe Forum Verification System is currently disabled.");
+                            return true;
+                        }
                         playerSender.sendMessage(ChatColor.RED + "You specified an invalid argument.");
                         return false;
                 }
             default:
+                if(!plugin.futils.enabled)
+                {
+                    playerSender.sendMessage(ChatColor.RED + "The VerifyMe Forum Verification System is currently disabled.");
+                    return true;
+                }
                 playerSender.sendMessage(ChatColor.RED + "You specified an invalid amount of arguments.");
                 return false;
         }

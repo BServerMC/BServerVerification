@@ -8,6 +8,7 @@ import com.commodore.verifyme.util.StorageUtils;
 import com.commodore.verifyme.command.Command_forum;
 import com.commodore.verifyme.util.VLog;
 import java.io.File;
+import java.util.Random;
 import me.totalfreedom.totalfreedommod.TotalFreedomMod;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -54,16 +55,21 @@ public class VerifyMe extends JavaPlugin
     @Override
     public void onDisable()
     {
+        if(dutils.enabled)
+        {
+            for(Object listener : dutils.bot.getRegisteredListeners())
+            {
+                dutils.bot.removeEventListener(listener);
+            }
+        }
         dutils.LINK_CODES.clear();
         dutils.VERIFY_CODES.clear();
         dutils.enabled = false;
+        
         futils.LINK_CODES.clear();
         futils.VERIFY_CODES.clear();
-        dutils.enabled = false;
-        for(Object listeners : dutils.bot.getRegisteredListeners())
-        {
-            dutils.bot.removeEventListener(listeners);
-        }
+        futils.enabled = false;
+        
         sutils.closeConnection();
         vlog.info("VerifyMe v1.0 disabled.");
     }
@@ -81,26 +87,33 @@ public class VerifyMe extends JavaPlugin
         validateConfig();
     }
     
-    private boolean validateConfig()
+    private void validateConfig()
     {
         if(getConfig().getBoolean("ForumVerification"))
         {
             if(getConfig().getString("ForumBotName").isEmpty() || getConfig().getString("ForumUsername").isEmpty() || getConfig().getString("ForumPassword").isEmpty() || getConfig().getString("ForumURL").isEmpty())
             {
-                vlog.warning("You have not filled out the config! This will cause issues in operation.");
-                return false;
+                vlog.warning("You have not filled out the forum verification config properly! This will cause issues in operation.");
             }
-            return true;
         }
         if(getConfig().getBoolean("DiscordVerification"))
         {
             if(getConfig().getString("DiscordBotToken").isEmpty())
             {
-                vlog.warning("You have not filled out the config! This will cause issues in operation.");
-                return false;
+                vlog.warning("You have not filled out the discord verification config properly! This will cause issues in operation.");
             }
-            return true;
         }
-        return true;
+    }
+    
+    public String generateToken()
+    {
+       
+        StringBuilder code = new StringBuilder();
+        Random random = new Random();
+        for(int i = 0; i < 6; i++)
+        {
+            code.append(random.nextInt(10));
+        }
+        return code.toString();
     }
 }

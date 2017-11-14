@@ -31,7 +31,8 @@ public class DiscordUtils extends ListenerAdapter
     
     public void start()
     {
-        enabled = plugin.getConfig().getBoolean("DiscordVerification") && !plugin.getConfig().getString("DiscordBotToken").isEmpty();
+        this.enabled = plugin.getConfig().getBoolean("DiscordVerification")
+                  && !plugin.getConfig().getString("DiscordBotToken").isEmpty();
         if(this.enabled)
         {
             try
@@ -45,19 +46,18 @@ public class DiscordUtils extends ListenerAdapter
             catch(LoginException e)
             {
                 plugin.vlog.warning("An invalid VerifyMe Discord Verification Bot token was specified, the VerifyMe Discord Verification System will be unavailable.");
+                this.enabled = false;
             }
             catch(IllegalArgumentException | InterruptedException e)
             {
                 plugin.vlog.warning("The VerifyMe Discord Verification System failed to start due to an error querying the server.");
+                this.enabled = false;
             }
             catch(RateLimitedException ex)
             {
                 plugin.vlog.warning("The VerifyMe Discord Verification System failed to start due to rate-limiting.");
+                this.enabled = false;
             }
-        }
-        else if(plugin.getConfig().getString("DiscordBotToken").isEmpty())
-        {
-            plugin.vlog.warning("No VerifyMe Discord Verification Bot token was specified, the VerifyMe Discord Verification System will be unavailable.");
         }
     }
     
@@ -81,16 +81,5 @@ public class DiscordUtils extends ListenerAdapter
                 }
             }
         }
-    }
-    
-    public String generateToken()
-    {
-        StringBuilder token = new StringBuilder();
-        Random random = new Random();
-        for(int i = 0;i < 6;i++)
-        {
-            token.append(random.nextInt(10));
-        }
-        return token.toString();
     }
 }
