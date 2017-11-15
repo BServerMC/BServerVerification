@@ -10,11 +10,11 @@ ForumURL: ''
 ForumUsername: ''
 ForumPassword: ''
 
-# Name of the forum bot.
-ForumBotName: ''
-
 # Should Discord Verification be enabled? Note, if you enabled this then you MUST fill out all discord-related configuration options.
 DiscordVerification: true
 
 # The token for the discord bot.
 DiscordBotToken: ''
+
+# Whether or not to enable debug messages.
+DebugMessages: false

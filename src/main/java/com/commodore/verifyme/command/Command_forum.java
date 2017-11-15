@@ -77,7 +77,7 @@ public class Command_forum implements CommandExecutor
                         
                         plugin.futils.findNewPmTask(playerSender);
                         playerSender.sendMessage(ChatColor.AQUA + "Your linking token is " + ChatColor.GREEN + linkingToken);
-                        playerSender.sendMessage(ChatColor.AQUA + "Please PM the forum bot named " + plugin.getConfig().getString("ForumBotName") + " with your token otherwise it will expire in 10 minutes.");
+                        playerSender.sendMessage(ChatColor.AQUA + "Please PM the forum bot named " + plugin.futils.botName + " with your token otherwise it will expire in 10 minutes.");
                         new BukkitRunnable()
                         {
                             @Override
@@ -182,7 +182,7 @@ public class Command_forum implements CommandExecutor
                         
                         playerSender.sendMessage(ChatColor.RED + "As a supered admin:");
                         playerSender.sendMessage(ChatColor.BLUE + "1. Run the command /forum linkaccount");
-                        playerSender.sendMessage(ChatColor.BLUE + "2. Copy the code that command gave you and jump on the forums, from there PM the bot named " + plugin.getConfig().getString("ForumBotName") + " with the token.");
+                        playerSender.sendMessage(ChatColor.BLUE + "2. Copy the code that command gave you and jump on the forums, from there PM the bot named " + plugin.futils.botName + " with the token.");
                         playerSender.sendMessage(ChatColor.BLUE + "3. Make sure the body of the message contains the token, the subject can be anything.");
                         playerSender.sendMessage(ChatColor.BLUE + "4. After a couple seconds you should get a confirmation message in chat. Your account is linked!");
                         

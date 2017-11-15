@@ -16,7 +16,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class Command_discord implements CommandExecutor
 {
-    
     private VerifyMe plugin;
     
     public Command_discord(VerifyMe plugin)
@@ -75,7 +74,7 @@ public class Command_discord implements CommandExecutor
                         plugin.dutils.LINK_CODES.put(linkAdmin, linkingToken);
                         
                         playerSender.sendMessage(ChatColor.AQUA + "Your linking token is " + ChatColor.GREEN + linkingToken);
-                        playerSender.sendMessage(ChatColor.AQUA + "Please PM the discord bot named " + plugin.dutils.bot.getSelfUser().getName() + " with your token otherwise it will expire in 10 minutes.");
+                        playerSender.sendMessage(ChatColor.AQUA + "Please PM the discord bot named " + plugin.dutils.botName + " with your token otherwise it will expire in 10 minutes.");
                         new BukkitRunnable()
                         {
                             @Override
@@ -138,7 +137,7 @@ public class Command_discord implements CommandExecutor
                         
                         String verifyToken = plugin.generateToken();
                         plugin.dutils.VERIFY_CODES.put(verifyAdmin, verifyToken);
-                        plugin.dutils.bot.getUserById(plugin.sutils.getDiscordId(verifyAdmin)).openPrivateChannel().queue((channel) -> channel.sendMessage("Hi! Someone with the IP: " + Ips.getIp(playerSender) + " just logged in with your account and tried to verify. If this is you please run the command: /discord verifytoken " + verifyToken).queue());
+                        plugin.dutils.sendPrivateMessage(plugin.dutils.getUserById(plugin.sutils.getDiscordId(verifyAdmin)), "Hi! Someone with the IP: " + Ips.getIp(playerSender) + " just logged in with your account and tried to verify. If this is you please run the command: /discord verifytoken " + verifyToken);
                         playerSender.sendMessage(ChatColor.GREEN + "A verification token has been sent to your discord account. It will expire in 10 minutes.");
                         new BukkitRunnable()
                         {
@@ -179,7 +178,7 @@ public class Command_discord implements CommandExecutor
                         
                         playerSender.sendMessage(ChatColor.RED + "As a supered admin:");
                         playerSender.sendMessage(ChatColor.BLUE + "1. Run the command /discord linkaccount");
-                        playerSender.sendMessage(ChatColor.BLUE + "2. Copy the code that command gave you and jump on discord, from there PM the bot named " + plugin.dutils.bot.getSelfUser().getName() + " with the token.");
+                        playerSender.sendMessage(ChatColor.BLUE + "2. Copy the code that command gave you and jump on discord, from there PM the bot named " + plugin.dutils.botName + " with the token.");
                         playerSender.sendMessage(ChatColor.BLUE + "3. After a couple seconds you should get a confirmation message in chat. Your account is linked!");
                         
                         playerSender.sendMessage(ChatColor.RED + "As an impostor:");

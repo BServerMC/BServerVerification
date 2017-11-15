@@ -10,6 +10,7 @@ import me.totalfreedom.totalfreedommod.admin.Admin;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -19,7 +20,8 @@ public class DiscordUtils extends ListenerAdapter
     public HashMap<Admin, String> LINK_CODES = new HashMap<>();
     public HashMap<Admin, String> VERIFY_CODES = new HashMap<>();
     
-    public JDA bot = null;
+    public JDA bot;
+    public String botName;
     public boolean enabled = false;
     
     private VerifyMe plugin;
@@ -32,15 +34,16 @@ public class DiscordUtils extends ListenerAdapter
     public void start()
     {
         this.enabled = plugin.getConfig().getBoolean("DiscordVerification")
-                  && !plugin.getConfig().getString("DiscordBotToken").isEmpty();
+                       && !plugin.getConfig().getString("DiscordBotToken").isEmpty();
         if(this.enabled)
         {
             try
             {
-                bot = new JDABuilder(AccountType.BOT)
+                this.bot = new JDABuilder(AccountType.BOT)
                         .setToken(plugin.getConfig().getString("DiscordBotToken"))
                         .addEventListener(this)
                         .buildBlocking();
+                this.botName = bot.getSelfUser().getName();
                 plugin.vlog.info("The VerifyMe Discord Verification System was enabled.");
             }
             catch(LoginException e)
@@ -81,5 +84,15 @@ public class DiscordUtils extends ListenerAdapter
                 }
             }
         }
+    }
+    
+    public void sendPrivateMessage(User user, String content)
+    {
+        user.openPrivateChannel().queue((channel) -> channel.sendMessage(content).queue());
+    }
+    
+    public User getUserById(String id)
+    {
+        return this.bot.getUserById(id);
     }
 }

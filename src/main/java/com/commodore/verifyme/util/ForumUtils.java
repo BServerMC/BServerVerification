@@ -17,7 +17,8 @@ public class ForumUtils
     public HashMap<Admin, String> LINK_CODES = new HashMap<>();
     public HashMap<Admin, String> VERIFY_CODES = new HashMap<>();
     
-    public SilentHtmlUnitDriver bot = null;
+    public SilentHtmlUnitDriver bot;
+    public String botName;
     public boolean enabled = false;
     
     private VerifyMe plugin;
@@ -30,7 +31,6 @@ public class ForumUtils
     public void start()
     {
         this.enabled = plugin.getConfig().getBoolean("ForumVerification")
-                       && !plugin.getConfig().getString("ForumBotName").isEmpty()
                        && !plugin.getConfig().getString("ForumUsername").isEmpty()
                        && !plugin.getConfig().getString("ForumPassword").isEmpty()
                        && !plugin.getConfig().getString("ForumURL").isEmpty();
@@ -38,14 +38,15 @@ public class ForumUtils
         {
             try
             {
-                bot = new SilentHtmlUnitDriver();
-                bot.get(plugin.getConfig().getString("ForumURL"));
-                bot.findElement(By.className("login")).click();
-                bot.findElement(By.cssSelector("input[name='email']")).sendKeys(plugin.getConfig().getString("ForumUsername"));
-                bot.findElement(By.cssSelector("input[name='password']")).sendKeys(plugin.getConfig().getString("ForumPassword"));
-                bot.findElement(By.cssSelector("input[name='continue']")).click();
-                bot.findElement(By.cssSelector("input[type='submit']")).click();
-                bot.close();
+                this.bot = new SilentHtmlUnitDriver(plugin.getConfig().getBoolean("DebugMessages"));
+                this.bot.get(plugin.getConfig().getString("ForumURL"));
+                this.bot.findElement(By.className("login")).click();
+                this.bot.findElement(By.cssSelector("input[name='email']")).sendKeys(plugin.getConfig().getString("ForumUsername"));
+                this.bot.findElement(By.cssSelector("input[name='password']")).sendKeys(plugin.getConfig().getString("ForumPassword"));
+                this.bot.findElement(By.cssSelector("input[name='continue']")).click();
+                this.bot.findElement(By.cssSelector("input[type='submit']")).click();
+                this.bot.close();
+                this.botName = bot.findElement(By.id("welcome")).getText();
                 plugin.vlog.info("The VerifyMe Forum Verification System was enabled.");
             }
             catch(NoSuchElementException e)
@@ -72,7 +73,7 @@ public class ForumUtils
     
     private void sendPM(final String forumUsername, final String subject, final String message)
     {
-        SilentHtmlUnitDriver driver = new SilentHtmlUnitDriver();
+        SilentHtmlUnitDriver driver = new SilentHtmlUnitDriver(plugin.getConfig().getBoolean("DebugMessages"));
         driver.get(plugin.getConfig().getString("ForumURL"));
         driver.findElement(By.className("login")).click();
         driver.findElement(By.cssSelector("input[name='email']")).sendKeys(plugin.getConfig().getString("ForumUsername"));
@@ -91,7 +92,7 @@ public class ForumUtils
     
     private boolean findNewPM(Player player)
     {
-        SilentHtmlUnitDriver driver = new SilentHtmlUnitDriver();
+        SilentHtmlUnitDriver driver = new SilentHtmlUnitDriver(plugin.getConfig().getBoolean("DebugMessages"));
         driver.get(plugin.getConfig().getString("ForumURL"));
         driver.findElement(By.className("login")).click();
         driver.findElement(By.cssSelector("input[name='email']")).sendKeys(plugin.getConfig().getString("ForumUsername"));

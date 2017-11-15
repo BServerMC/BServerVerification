@@ -14,8 +14,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class VerifyMe extends JavaPlugin
 {
-    public DiscordUtils dutils;
     public ForumUtils futils;
+    public DiscordUtils dutils;
     public StorageUtils sutils;
     public VLog vlog;
     public TotalFreedomMod tfm;
@@ -45,9 +45,9 @@ public class VerifyMe extends JavaPlugin
         this.sutils.processStorage();
         this.sutils.processInactiveAdmins();
         
-        // Discord and Forum Verification
-        this.dutils.start();
+        // Forum and Discord Verification
         this.futils.start();
+        this.dutils.start();
         
         vlog.info("VerifyMe v1.0 enabled.");
     }
@@ -91,7 +91,7 @@ public class VerifyMe extends JavaPlugin
     {
         if(getConfig().getBoolean("ForumVerification"))
         {
-            if(getConfig().getString("ForumBotName").isEmpty() || getConfig().getString("ForumUsername").isEmpty() || getConfig().getString("ForumPassword").isEmpty() || getConfig().getString("ForumURL").isEmpty())
+            if(getConfig().getString("ForumUsername").isEmpty() || getConfig().getString("ForumPassword").isEmpty() || getConfig().getString("ForumURL").isEmpty())
             {
                 vlog.warning("You have not filled out the forum verification config properly! This will cause issues in operation.");
             }
@@ -107,7 +107,6 @@ public class VerifyMe extends JavaPlugin
     
     public String generateToken()
     {
-       
         StringBuilder code = new StringBuilder();
         Random random = new Random();
         for(int i = 0; i < 6; i++)

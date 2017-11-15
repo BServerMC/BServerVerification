@@ -8,10 +8,13 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 class SilentHtmlUnitDriver extends HtmlUnitDriver
 {
-    SilentHtmlUnitDriver()
+    SilentHtmlUnitDriver(boolean debug)
     {
         super();
-        Logger.getLogger(ResponseProcessCookies.class.getName()).setLevel(Level.OFF);
-        this.getWebClient().setCssErrorHandler(new SilentCssErrorHandler());
+        if(debug)
+        {
+            Logger.getLogger(ResponseProcessCookies.class.getName()).setLevel(Level.OFF);
+            this.getWebClient().setCssErrorHandler(new SilentCssErrorHandler());
+        }
     }
 }
