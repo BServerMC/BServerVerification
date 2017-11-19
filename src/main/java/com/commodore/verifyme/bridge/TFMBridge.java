@@ -2,6 +2,7 @@ package com.commodore.verifyme.bridge;
 
 import com.commodore.verifyme.VerifyMe;
 import me.totalfreedom.totalfreedommod.TotalFreedomMod;
+import org.bukkit.event.server.ServerEvent;
 import org.bukkit.plugin.PluginManager;
 
 public class TFMBridge

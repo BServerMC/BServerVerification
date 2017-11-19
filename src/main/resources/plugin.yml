@@ -6,6 +6,9 @@ depend: [TotalFreedomMod]
 author: Commodore64x
 
 commands:
+  verifyme:
+    description: The main plugin command, displays information about the plugin.
+    usage: "Usage: /verifyme"
   forum:
     description: The forum verification command, request or submit a verification token.
     usage: "Usage: /forum <linkaccount | unlinkaccount [admin]> <gettoken> || <verifytoken token> || <help>"

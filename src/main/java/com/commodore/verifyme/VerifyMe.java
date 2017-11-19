@@ -2,6 +2,7 @@ package com.commodore.verifyme;
 
 import com.commodore.verifyme.bridge.TFMBridge;
 import com.commodore.verifyme.command.Command_discord;
+import com.commodore.verifyme.command.Command_verifyme;
 import com.commodore.verifyme.util.DiscordUtils;
 import com.commodore.verifyme.util.ForumUtils;
 import com.commodore.verifyme.util.StorageUtils;
@@ -30,6 +31,7 @@ public class VerifyMe extends JavaPlugin
         this.createConfig();
         
         // Commands
+        this.getCommand("verifyme").setExecutor(new Command_verifyme(this));
         this.getCommand("forum").setExecutor(new Command_forum(this));
         this.getCommand("discord").setExecutor(new Command_discord(this));
         
@@ -49,7 +51,7 @@ public class VerifyMe extends JavaPlugin
         this.futils.start();
         this.dutils.start();
         
-        vlog.info("VerifyMe v1.0 enabled.");
+        vlog.info("VerifyMe v1.2 enabled.");
     }
     
     @Override
@@ -71,7 +73,7 @@ public class VerifyMe extends JavaPlugin
         futils.enabled = false;
         
         sutils.closeConnection();
-        vlog.info("VerifyMe v1.0 disabled.");
+        vlog.info("VerifyMe v1.2 disabled.");
     }
     
     private void createConfig()
