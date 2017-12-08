@@ -55,17 +55,17 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>3.6.0</version>
+            <version>3.8.1</version>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>htmlunit-driver</artifactId>
-            <version>2.27</version>
+            <version>2.28.2</version>
         </dependency>
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>3.3.1_303</version>
+            <version>3.3.1_308</version>
         </dependency>
     </dependencies>
 
@@ -81,7 +81,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.6.1</version>
+                <version>3.7.0</version>
                 <configuration>
                     <outputFileName>VerifyMe.jar</outputFileName>
                     <compilerVersion>1.8</compilerVersion>
@@ -92,7 +92,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
