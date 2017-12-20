@@ -3,7 +3,6 @@ package com.commodore.verifyme.util;
 import com.commodore.verifyme.VerifyMe;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 import me.totalfreedom.totalfreedommod.admin.Admin;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -45,13 +44,13 @@ public class ForumUtils
                 this.bot.findElement(By.cssSelector("input[name='password']")).sendKeys(plugin.getConfig().getString("ForumPassword"));
                 this.bot.findElement(By.cssSelector("input[name='continue']")).click();
                 this.bot.findElement(By.cssSelector("input[type='submit']")).click();
-                this.bot.close();
                 this.botName = bot.findElement(By.id("welcome")).getText();
+                this.bot.close();
                 plugin.vlog.info("The VerifyMe Forum Verification System was enabled.");
             }
             catch(NoSuchElementException e)
             {
-                bot.close();
+                this.bot.close();
                 plugin.vlog.warning("An invalid VerifyMe Forum Verification Bot username or password was specified, the VerifyMe Forum Verification System will be unavailable.");
                 this.enabled = false;
             }
@@ -166,7 +165,7 @@ public class ForumUtils
             public void run()
             {
                 tries++;
-                if(plugin.futils.findNewPM(player) || tries >= 30 || !player.isOnline() || player == null)
+                if(plugin.futils.findNewPM(player) || tries >= 40 || !player.isOnline() || player == null)
                 {
                     tries = 0;
                     this.cancel();
