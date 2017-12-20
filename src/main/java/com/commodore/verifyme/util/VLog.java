@@ -13,7 +13,7 @@ public class VLog
         this.vlog = plugin.getLogger();
     }
     
-    public void log(Level level, String message)
+    private void log(Level level, String message)
     {
         this.vlog.log(level, message);
     }

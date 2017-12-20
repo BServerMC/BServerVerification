@@ -4,9 +4,11 @@ import com.commodore.verifyme.VerifyMe;
 import com.commodore.verifyme.util.LinkedAccountType;
 import java.util.Date;
 import me.totalfreedom.totalfreedommod.admin.Admin;
+import me.totalfreedom.totalfreedommod.rank.Displayable;
 import me.totalfreedom.totalfreedommod.rank.Rank;
 import me.totalfreedom.totalfreedommod.util.FUtil;
 import net.pravian.aero.util.Ips;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -33,6 +35,7 @@ public class Command_discord implements CommandExecutor
         }
         
         Player playerSender = (Player) sender;
+        String name = playerSender.getName();
         switch(args.length)
         {
             case 0:
@@ -41,6 +44,7 @@ public class Command_discord implements CommandExecutor
                     playerSender.sendMessage(ChatColor.RED + "The VerifyMe Discord Verification System is currently disabled.");
                     return true;
                 }
+                
                 playerSender.sendMessage(ChatColor.RED + "You didn't specify enough arguments.");
                 return false;
             case 1:
@@ -57,6 +61,7 @@ public class Command_discord implements CommandExecutor
                             playerSender.sendMessage(ChatColor.RED + "You are not authorised to use this command!");
                             return true;
                         }
+                        
                         Admin linkAdmin = plugin.tfm.al.getAdmin(playerSender);
                         if(plugin.sutils.hasAlreadyLinkedAccount(linkAdmin.getName(), LinkedAccountType.DISCORD))
                         {
@@ -70,9 +75,10 @@ public class Command_discord implements CommandExecutor
                             playerSender.sendMessage(ChatColor.AQUA + "Your linking token is " + ChatColor.GREEN + token);
                             return true;
                         }
+                        
+                        plugin.vlog.info(name + " has begun the discord account link process.");
                         String linkingToken = plugin.generateToken();
                         plugin.dutils.LINK_CODES.put(linkAdmin, linkingToken);
-                        
                         playerSender.sendMessage(ChatColor.AQUA + "Your linking token is " + ChatColor.GREEN + linkingToken);
                         playerSender.sendMessage(ChatColor.AQUA + "Please PM the discord bot named " + plugin.dutils.botName + " with your token otherwise it will expire in 10 minutes.");
                         new BukkitRunnable()
@@ -82,6 +88,7 @@ public class Command_discord implements CommandExecutor
                             {
                                 if(plugin.dutils.LINK_CODES.keySet().contains(linkAdmin))
                                 {
+                                    plugin.vlog.info(name + "'s discord linking token has expired.");
                                     plugin.dutils.LINK_CODES.remove(linkAdmin);
                                     if(playerSender != null)
                                     {
@@ -102,12 +109,15 @@ public class Command_discord implements CommandExecutor
                             playerSender.sendMessage(ChatColor.RED + "You are not authorised to use this command!");
                             return true;
                         }
+                        
                         Admin unlinkAdmin = plugin.tfm.al.getAdmin(playerSender);
                         if(!plugin.sutils.hasAlreadyLinkedAccount(unlinkAdmin.getName(), LinkedAccountType.DISCORD))
                         {
                             playerSender.sendMessage(ChatColor.RED + "You have not got a discord account linked to this account!");
                             return true;
                         }
+                        
+                        plugin.vlog.info(name + " has unlinked their discord account.");
                         plugin.sutils.deleteAccountFromStorage(unlinkAdmin.getName(), LinkedAccountType.DISCORD);
                         playerSender.sendMessage(ChatColor.GREEN + "Your discord account has been unlinked from this account.");
                         return true;
@@ -135,6 +145,8 @@ public class Command_discord implements CommandExecutor
                             return true;
                         }
                         
+                        plugin.vlog.info(name + " has obtained a discord verification code.");
+                        FUtil.bcastMsg(playerSender.getName() + " is verifying using Discord Verification!", ChatColor.GOLD);
                         String verifyToken = plugin.generateToken();
                         plugin.dutils.VERIFY_CODES.put(verifyAdmin, verifyToken);
                         plugin.dutils.sendPrivateMessage(plugin.dutils.getUserById(plugin.sutils.getDiscordId(verifyAdmin)), "Hi! Someone with the IP: " + Ips.getIp(playerSender) + " just logged in with your account and tried to verify. If this is you please run the command: /discord verifytoken " + verifyToken);
@@ -146,6 +158,7 @@ public class Command_discord implements CommandExecutor
                             {
                                 if(plugin.dutils.VERIFY_CODES.keySet().contains(verifyAdmin))
                                 {
+                                    plugin.vlog.info(name + "'s discord verification token has expired.");
                                     plugin.dutils.VERIFY_CODES.remove(verifyAdmin);
                                     if(playerSender != null)
                                     {
@@ -161,6 +174,7 @@ public class Command_discord implements CommandExecutor
                             playerSender.sendMessage(ChatColor.RED + "The VerifyMe Discord Verification System is currently disabled.");
                             return true;
                         }
+                        
                         playerSender.sendMessage(ChatColor.RED + "You specified an invalid amount of arguments.");
                         return false;
                     case "help":
@@ -174,6 +188,7 @@ public class Command_discord implements CommandExecutor
                             playerSender.sendMessage(ChatColor.RED + "You are not authorised to use this command!");
                             return true;
                         }
+                        
                         playerSender.sendMessage(ChatColor.GREEN + "VerifyMe Discord Verification Usage");
                         
                         playerSender.sendMessage(ChatColor.RED + "As a supered admin:");
@@ -193,6 +208,7 @@ public class Command_discord implements CommandExecutor
                             playerSender.sendMessage(ChatColor.RED + "The VerifyMe Discord Verification System is currently disabled.");
                             return true;
                         }
+                        
                         playerSender.sendMessage(ChatColor.RED + "You specified an invalid argument.");
                         return false;
                 }
@@ -210,6 +226,7 @@ public class Command_discord implements CommandExecutor
                             playerSender.sendMessage(ChatColor.RED + "You are not an impostor!");
                             return true;
                         }
+                        
                         Admin admin = plugin.tfm.al.getEntryByName(playerSender.getName());
                         if(!plugin.dutils.VERIFY_CODES.keySet().contains(admin))
                         {
@@ -223,6 +240,8 @@ public class Command_discord implements CommandExecutor
                             playerSender.sendMessage(ChatColor.RED + "You have entered an invalid token. Please try again.");
                             return true;
                         }
+                        
+                        plugin.vlog.info(name + " has verified their account using discord.");
                         plugin.dutils.VERIFY_CODES.remove(admin);
                         FUtil.bcastMsg(playerSender.getName() + " has verified their identity.", ChatColor.GOLD);
                         FUtil.adminAction("VerifyMe", "Re-adding " + admin.getName() + " to the admin list", true);
@@ -232,6 +251,10 @@ public class Command_discord implements CommandExecutor
                         admin.setLastLogin(new Date());
                         plugin.tfm.al.save();
                         plugin.tfm.al.updateTables();
+                        final Displayable display = plugin.tfm.rm.getDisplay(playerSender);
+                        plugin.tfm.pl.getPlayer(playerSender).setTag(display.getColoredTag());
+                        String displayName = display.getColor() + playerSender.getName();
+                        playerSender.setPlayerListName(StringUtils.substring(displayName, 0, 16));
                         return true;
                     case "unlinkaccount":
                         if(!plugin.dutils.enabled)
@@ -244,12 +267,15 @@ public class Command_discord implements CommandExecutor
                             playerSender.sendMessage(ChatColor.RED + "You are not authorised to use this command!");
                             return true;
                         }
+                        
                         String adminName = args[1];
                         if(!plugin.sutils.hasAlreadyLinkedAccount(adminName, LinkedAccountType.DISCORD))
                         {
                             playerSender.sendMessage(ChatColor.RED + adminName + " does not have a discord account linked to this account!");
                             return true;
                         }
+                        
+                        plugin.vlog.info(name + " has unlinked " + adminName + "'s discord account.");
                         plugin.sutils.deleteAccountFromStorage(adminName, LinkedAccountType.DISCORD);
                         playerSender.sendMessage(ChatColor.GREEN + adminName + " has had their discord account unlinked from this account.");
                         return true;
@@ -259,6 +285,7 @@ public class Command_discord implements CommandExecutor
                             playerSender.sendMessage(ChatColor.RED + "The VerifyMe Discord Verification System is currently disabled.");
                             return true;
                         }
+                        
                         playerSender.sendMessage(ChatColor.RED + "You specified an invalid argument.");
                         return false;
                 }
@@ -268,6 +295,7 @@ public class Command_discord implements CommandExecutor
                     playerSender.sendMessage(ChatColor.RED + "The VerifyMe Discord Verification System is currently disabled.");
                     return true;
                 }
+                
                 playerSender.sendMessage(ChatColor.RED + "You specified an invalid amount of arguments.");
                 return false;
         }

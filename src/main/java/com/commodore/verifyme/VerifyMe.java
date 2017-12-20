@@ -13,6 +13,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import me.totalfreedom.totalfreedommod.TotalFreedomMod;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class VerifyMe extends JavaPlugin
@@ -22,6 +23,7 @@ public class VerifyMe extends JavaPlugin
     public StorageUtils sutils;
     public VLog vlog;
     public TotalFreedomMod tfm;
+    public PluginDescriptionFile pdf;
     
     @Override
     public void onEnable()
@@ -53,7 +55,9 @@ public class VerifyMe extends JavaPlugin
         this.futils.start();
         this.dutils.start();
         
-        vlog.info("VerifyMe v1.2 enabled.");
+        this.pdf = this.getDescription();
+        
+        vlog.info(String.format("VerifyMe v%s enabled.", pdf.getVersion()));
     }
     
     @Override
@@ -72,14 +76,13 @@ public class VerifyMe extends JavaPlugin
         futils.enabled = false;
         
         sutils.closeConnection();
-        vlog.info("VerifyMe v1.2 disabled.");
+        vlog.info(String.format("VerifyMe v%s disabled.", pdf.getVersion()));
     }
     
     private void createConfig()
     {
         new File(getDataFolder().getAbsolutePath()).mkdirs();
-        File configFile = new File(getDataFolder() + File.separator + "config.yml");
-        if(!configFile.exists())
+        if(!new File(getDataFolder() + File.separator + "config.yml").exists())
         {
             vlog.info("Cannot find config.yml, Generating now...");
             vlog.info("Config generated!");
@@ -102,9 +105,7 @@ public class VerifyMe extends JavaPlugin
     
     public String generateToken()
     {
-        String code;
         Random random = new Random();
-        code = IntStream.range(0, 6).mapToObj(i -> String.valueOf(random.nextInt(10))).collect(Collectors.joining());
-        return code;
+        return IntStream.range(0, 6).mapToObj(i -> String.valueOf(random.nextInt(10))).collect(Collectors.joining());
     }
 }

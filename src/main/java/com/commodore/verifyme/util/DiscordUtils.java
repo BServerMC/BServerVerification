@@ -3,7 +3,6 @@ package com.commodore.verifyme.util;
 import com.commodore.verifyme.VerifyMe;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import javax.security.auth.login.LoginException;
 import me.totalfreedom.totalfreedommod.admin.Admin;
@@ -77,6 +76,7 @@ public class DiscordUtils extends ListenerAdapter
                 if(me.getValue().toString().equals(token))
                 {
                     Admin admin = (Admin) me.getKey();
+                    plugin.vlog.info(admin.getName() + " has linked their discord account.");
                     LINK_CODES.remove(admin);
                     plugin.sutils.addAccountToStorage(admin, event.getAuthor().getId(), LinkedAccountType.DISCORD);
                     event.getChannel().sendMessage("Your discord account has been successfully linked to your ingame account.").queue();

@@ -11,7 +11,7 @@ class SilentHtmlUnitDriver extends HtmlUnitDriver
     SilentHtmlUnitDriver(boolean debug)
     {
         super();
-        if(debug)
+        if(!debug)
         {
             Logger.getLogger(ResponseProcessCookies.class.getName()).setLevel(Level.OFF);
             this.getWebClient().setCssErrorHandler(new SilentCssErrorHandler());

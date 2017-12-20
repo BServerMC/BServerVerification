@@ -37,16 +37,24 @@ public class ForumUtils
         {
             try
             {
-                this.bot = new SilentHtmlUnitDriver(plugin.getConfig().getBoolean("DebugMessages"));
-                this.bot.get(plugin.getConfig().getString("ForumURL"));
-                this.bot.findElement(By.className("login")).click();
-                this.bot.findElement(By.cssSelector("input[name='email']")).sendKeys(plugin.getConfig().getString("ForumUsername"));
-                this.bot.findElement(By.cssSelector("input[name='password']")).sendKeys(plugin.getConfig().getString("ForumPassword"));
-                this.bot.findElement(By.cssSelector("input[name='continue']")).click();
-                this.bot.findElement(By.cssSelector("input[type='submit']")).click();
-                this.botName = bot.findElement(By.id("welcome")).getText();
-                this.bot.close();
-                plugin.vlog.info("The VerifyMe Forum Verification System was enabled.");
+                new BukkitRunnable()
+                {
+                    
+                    @Override
+                    public void run()
+                    {
+                        bot = new SilentHtmlUnitDriver(plugin.getConfig().getBoolean("DebugMessages"));
+                        bot.get(plugin.getConfig().getString("ForumURL"));
+                        bot.findElement(By.className("login")).click();
+                        bot.findElement(By.cssSelector("input[name='email']")).sendKeys(plugin.getConfig().getString("ForumUsername"));
+                        bot.findElement(By.cssSelector("input[name='password']")).sendKeys(plugin.getConfig().getString("ForumPassword"));
+                        bot.findElement(By.cssSelector("input[name='continue']")).click();
+                        bot.findElement(By.cssSelector("input[type='submit']")).click();
+                        botName = bot.findElement(By.id("welcome")).getText();
+                        bot.close();
+                        plugin.vlog.info("The VerifyMe Forum Verification System was enabled.");
+                    }
+                }.runTaskAsynchronously(plugin);
             }
             catch(NoSuchElementException e)
             {
@@ -110,6 +118,7 @@ public class ForumUtils
                 String msg = driver.findElement(By.className("item")).findElement(By.className("message")).getText().trim();
                 String forumUsername = driver.findElement(By.className("mini-profile")).findElement(By.tagName("a")).getAttribute("title").trim().replace("@", "");
                 boolean isStaff = doesElementExist(driver.findElement(By.className("info")), By.tagName("h2"));
+                
                 Admin admin = plugin.tfm.al.getEntryByName(player.getName());
                 if(!LINK_CODES.get(admin).equals(msg))
                 {
@@ -132,6 +141,7 @@ public class ForumUtils
                     continue;
                 }
                 
+                plugin.vlog.info(admin.getName() + " has linked their forum account.");
                 LINK_CODES.remove(admin);
                 plugin.sutils.addAccountToStorage(admin, forumUsername, LinkedAccountType.FORUM);
                 player.sendMessage(ChatColor.GREEN + "Your forum account has been successfully linked to your ingame account.");
@@ -171,6 +181,6 @@ public class ForumUtils
                     this.cancel();
                 }
             }
-        }.runTaskTimerAsynchronously(plugin, 20L * 15L, 20L * 15L);
+        }.runTaskTimerAsynchronously(plugin, 0, 10 * 20L);
     }
 }

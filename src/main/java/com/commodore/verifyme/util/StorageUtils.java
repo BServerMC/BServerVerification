@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import me.totalfreedom.totalfreedommod.admin.Admin;
 import me.totalfreedom.totalfreedommod.config.ConfigEntry;
-import net.bytebuddy.dynamic.scaffold.MethodGraph;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -38,8 +37,8 @@ public class StorageUtils
                 if(this.connection != null)
                 {
                     plugin.vlog.info("Cannot find database file, Generating now...");
-                    this.connection.createStatement().execute("CREATE TABLE IF NOT EXISTS forumverifiedadmins(adminname text PRIMARY KEY, forumname text NOT NULL, lastlogin integer NOT NULL);");
-                    this.connection.createStatement().execute("CREATE TABLE IF NOT EXISTS discordverifiedadmins(adminname text PRIMARY KEY, discordid text NOT NULL, lastlogin integer NOT NULL);");
+                    this.connection.createStatement().execute("CREATE TABLE IF NOT EXISTS forumverifiedadmins(adminname TEXT PRIMARY KEY, forumname TEXT NOT NULL, lastlogin INTEGER NOT NULL);");
+                    this.connection.createStatement().execute("CREATE TABLE IF NOT EXISTS discordverifiedadmins(adminname TEXT PRIMARY KEY, discordid TEXT NOT NULL, lastlogin INTEGER NOT NULL);");
                     plugin.vlog.info("Storage generated!");
                 }
             }
@@ -65,11 +64,11 @@ public class StorageUtils
         switch(type)
         {
             case DISCORD:
-                sql = "SELECT adminname from discordverifiedadmins WHERE adminname = ?;";
+                sql = "SELECT adminname FROM discordverifiedadmins WHERE adminname = ?;";
                 break;
             
             case FORUM:
-                sql = "SELECT adminname from forumverifiedadmins WHERE adminname = ?;";
+                sql = "SELECT adminname FROM forumverifiedadmins WHERE adminname = ?;";
                 break;
             default:
                 return false;
