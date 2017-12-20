@@ -19,7 +19,7 @@ public class Command_verifyme implements CommandExecutor
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args)
     {
         sender.sendMessage(ChatColor.GREEN + "VerifyMe is a plugin to verify admins on the TotalFreedom Minecraft server.");
-        sender.sendMessage(ChatColor.GREEN + "It was solely developed by Commodore64x for use on Minecraft Version 1.12.2");
+        sender.sendMessage(ChatColor.GREEN + "It was solely created and developed by Commodore64x.");
         sender.sendMessage(ChatColor.GREEN + "Forum and Discord verification is available by doing /forum and /discord respectively.");
         return true;
     }

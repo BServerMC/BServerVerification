@@ -58,7 +58,7 @@ public class Command_discord implements CommandExecutor
                         }
                         if(!plugin.tfm.al.isAdmin(sender))
                         {
-                            playerSender.sendMessage(ChatColor.RED + "You are not authorised to use this command!");
+                            playerSender.sendMessage(ChatColor.RED + "You are not authorized to use this command!");
                             return true;
                         }
                         
@@ -106,7 +106,7 @@ public class Command_discord implements CommandExecutor
                         }
                         if(!plugin.tfm.al.isAdmin(sender))
                         {
-                            playerSender.sendMessage(ChatColor.RED + "You are not authorised to use this command!");
+                            playerSender.sendMessage(ChatColor.RED + "You are not authorized to use this command!");
                             return true;
                         }
                         
@@ -185,7 +185,7 @@ public class Command_discord implements CommandExecutor
                         }
                         if(!(plugin.tfm.al.isAdmin(playerSender) || plugin.tfm.al.isAdminImpostor(playerSender)))
                         {
-                            playerSender.sendMessage(ChatColor.RED + "You are not authorised to use this command!");
+                            playerSender.sendMessage(ChatColor.RED + "You are not authorized to use this command!");
                             return true;
                         }
                         
@@ -264,7 +264,7 @@ public class Command_discord implements CommandExecutor
                         }
                         if(!(plugin.tfm.al.isAdmin(playerSender) && plugin.tfm.rm.getRank(playerSender) == Rank.SENIOR_ADMIN))
                         {
-                            playerSender.sendMessage(ChatColor.RED + "You are not authorised to use this command!");
+                            playerSender.sendMessage(ChatColor.RED + "You are not authorized to use this command!");
                             return true;
                         }
                         
