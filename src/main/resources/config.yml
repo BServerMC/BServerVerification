@@ -1,14 +1,4 @@
-#============ VerifyMe ============#
-
-# Should Forum Verification be enabled? Note, if you enabled this then you MUST fill out all forum-related configuration options.
-ForumVerification: true
-
-# The URL of the forums.
-ForumURL: ''
-
-# The username and password for the forum bot account.
-ForumUsername: ''
-ForumPassword: ''
+#============ BServerVerification ============#
 
 # Should Discord Verification be enabled? Note, if you enabled this then you MUST fill out all discord-related configuration options.
 DiscordVerification: true
