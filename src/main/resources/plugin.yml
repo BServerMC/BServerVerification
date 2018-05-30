@@ -1,8 +1,8 @@
 name: VerifyMe
 main: com.commodore.verifyme.VerifyMe
 version: 1.3
-description: Plugin to verify admins on the TotalFreedom server
-depend: [TotalFreedomMod]
+description: Plugin to verify staff on the BServer server
+depend: [BServerMod]
 author: Commodore64x
 
 commands:
@@ -11,7 +11,7 @@ commands:
     usage: "Usage: /verifyme"
   forum:
     description: The forum verification command, request or submit a verification token.
-    usage: "Usage: /forum <linkaccount | unlinkaccount [admin]> <gettoken> || <verifytoken token> || <help>"
+    usage: "Unkown command. Use "/help" for help"
   discord:
     description: The discord verification command, request or submit a verification token.
     usage: "Usage: /discord <linkaccount | unlinkaccount [admin]> <gettoken> || <verifytoken token> || <help>"
